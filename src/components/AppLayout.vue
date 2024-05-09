@@ -5,7 +5,7 @@
       <slot name="colorInput" />
       <!-- <div /> -->
       <slot name="pallete" />
-      <slot name="transparencySlider" />
+      <slot v-if="showTransparency" name="transparencySlider" />
       <slot name="hueSlider" />
     </div>
   </div>
@@ -15,7 +15,7 @@
 import { inject } from 'vue'
 
 const isOpen = inject('isOpen')
-// const mode = inject('mode')
+const showTransparency = inject('showTransparency')
 </script>
 
 <style scoped>

@@ -2,7 +2,7 @@
   <div
     @mousedown="handlePositionAndStartDragging"
     ref="transparencySelector"
-    class="hue-selector"
+    class="hue-slider"
     :style="{ background: backgroundGradient }"
   >
     <SliderThumb
@@ -192,7 +192,7 @@ onUpdated(() => {
 </script>
 
 <style scoped>
-.hue-selector {
+.hue-slider {
   position: relative;
   width: 18px;
   height: 100%;
@@ -200,7 +200,7 @@ onUpdated(() => {
   border-radius: 9px;
 }
 
-.hue-selector::after {
+.hue-slider::after {
   content: "";
   background-image: url(/src/assets/bg-transparency.svg);
   z-index: -1;

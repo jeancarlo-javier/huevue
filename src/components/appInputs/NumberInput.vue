@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, toRefs } from 'vue'
+import { defineProps, ref, toRefs, watch } from 'vue'
 
 const props = defineProps({
   inputValue: {
@@ -32,6 +32,10 @@ const { inputValue, min, max } = toRefs(props)
 const emit = defineEmits(['setValue'])
 
 const lastValidNumber = ref(inputValue.value)
+
+watch(inputValue, (value) => {
+  lastValidNumber.value = value
+})
 
 const setValue = (e) => {
   let value = parseFloat(e.target.value)

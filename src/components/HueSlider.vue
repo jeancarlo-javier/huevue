@@ -1,5 +1,5 @@
 <template>
-  <div ref="hueSlider" @mousedown="handlePositionAndStartDragging" class="hue-selector">
+  <div ref="hueSlider" @mousedown="handlePositionAndStartDragging" class="hue-slider">
     <SliderThumb
       @setThumbRef="handleThumbEvents"
       :thumbStyle="{ left: hueLeftPosition }"
@@ -184,12 +184,13 @@ onUpdated(() => {
 </script>
 
 <style scoped>
-.hue-selector {
+.hue-slider {
   position: relative;
   width: 100%;
   height: 18px;
   border: 2px solid white;
   border-radius: 9px;
   background: linear-gradient(90deg, red 0%, yellow 17%, lime 33%, aqua 50%, blue 67%, magenta 83%, red);
+  grid-column: 1;
 }
 </style>

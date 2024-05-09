@@ -13,6 +13,7 @@
       :min="0" :max="100"
       :inputValue="lightness" />
     <NumberInput
+      v-if="showTransparency"
       @setValue="(n) => setValue(n, 'setTransparency')"
       :min="0" :max="100"
       :inputValue="transparency" />
@@ -24,6 +25,8 @@ import { inject, defineEmits } from 'vue'
 import NumberInput from '../appInputs/NumberInput.vue'
 
 const emit = defineEmits(['setHue', 'setSaturation', 'setLightness', 'setTransparency'])
+
+const showTransparency = inject('showTransparency')
 
 const hue = inject('hue')
 const saturation = inject('saturation')
@@ -37,8 +40,9 @@ const setValue = (n, action) => {
 
 <style scoped>
 div {
-  display: grid;
+  display: flex;
+  column-gap: 3px; /* Compatibility with IE11 */
   gap: 3px;
-  grid-template-columns: repeat(4, minmax(20px, 1fr));
+  justify-content: space-between;
 }
 </style>

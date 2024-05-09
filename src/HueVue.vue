@@ -21,6 +21,14 @@
       <TransparencySlider @setTransparency="setTransparency" />
     </template>
   </AppLayout>
+  <div :style="{ height: '200px' }" />
+  <div>
+    <h3>Props</h3>
+  </div>
+  <label>
+    Show Transparency
+    <input v-model="showTransparency" type="checkbox" />
+  </label>
 </template>
 
 <script>
@@ -32,12 +40,13 @@ import HueSlider from './components/HueSlider.vue'
 import TransparencySlider from './components/TransparencySlider.vue'
 import ColorInput from './components/ColorInput.vue'
 import colorModes from './config/colorModes'
+import { hslToHex } from './utils/color-conversions.js'
 
 export default {
   props: {
     mode: {
       type: String,
-      default: 'hsl'
+      default: 'hex'
     }
   },
   components: {
@@ -57,6 +66,8 @@ export default {
     const saturation = ref(100)
     const lightness = ref(50)
     const transparency = ref(50)
+
+    const showTransparency = ref(false)
 
     const defaultMode = colorModes.find(mode => mode.id === props.mode)
 
@@ -85,7 +96,7 @@ export default {
     }
 
     provide('isOpen', isOpen)
-
+    provide('showTransparency', showTransparency)
     provide('HSLColor', HSLColor)
 
     provide('hue', hue)
@@ -94,12 +105,22 @@ export default {
     provide('transparency', transparency)
     provide('mode', mode)
 
-    watch([hue, saturation, lightness, transparency], () => {
-      HSLColor.value = `hsl(${hue.value}deg ${saturation.value}% ${lightness.value}% / ${transparency.value}%)`
+    watch([hue, saturation, lightness, transparency, showTransparency], () => {
+      let hslColorContent = `${hue.value}deg ${saturation.value}% ${lightness.value}%`
 
-      // ! Temporal
-      document.body.style.background = HSLColor.value
-      // ! Temporal
+      if (showTransparency.value) {
+        hslColorContent = `${hslColorContent} / ${transparency.value}%`
+      }
+
+      HSLColor.value = `hsl(${hslColorContent})`
+
+      if (mode.value.id === 'hex') {
+        const hex = hslToHex(hue.value, saturation.value, lightness.value, showTransparency.value ? transparency.value : null)
+
+        document.body.style.background = hex
+      } else if (mode.value.id === 'hsl') {
+        document.body.style.background = HSLColor.value
+      }
     }, { immediate: true })
 
     return {
@@ -107,7 +128,9 @@ export default {
       setHue,
       setSaturation,
       setLightness,
-      setTransparency
+      setTransparency,
+      // ! Temporal
+      showTransparency
     }
   }
 }

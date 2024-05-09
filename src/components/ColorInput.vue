@@ -1,18 +1,26 @@
 <template>
   <div class="color-input-container">
     <span class="mode-text">{{ modeText }}</span>
-    <!-- <slot name="input" /> -->
-    <HSLInput
-      @setLightness="setLightness"
-      @setSaturation="setSaturation"
+    <HSLInputs
+      v-if="mode.id ==='hsl'"
       @setHue="setHue"
+      @setSaturation="setSaturation"
+      @setLightness="setLightness"
+      @setTransparency="setTransparency"
+    />
+    <HEXInputs
+      v-if="mode.id ==='hex'"
+      @setHue="setHue"
+      @setSaturation="setSaturation"
+      @setLightness="setLightness"
       @setTransparency="setTransparency"
     />
   </div>
 </template>
 
 <script setup>
-import HSLInput from './modeInputs/HSLInput.vue'
+import HSLInputs from './modeInputs/HSLInputs.vue'
+import HEXInputs from './modeInputs/HEX/HEXInputs.vue'
 import { computed, inject, defineEmits } from 'vue'
 
 const mode = inject('mode')
@@ -58,7 +66,7 @@ const modeText = computed(() => {
   min-width: 160px;
 }
 .mode-text {
-  margin: auto;
+  margin: auto 0;
   font-size: 11px;
   font-weight: 400;
   color: #7C7C7C;

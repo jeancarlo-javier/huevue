@@ -146,6 +146,7 @@ const handleThumbEvents = (thumbRef) => {
 
   const mouseup = () => {
     document.body.removeEventListener('mousemove', onMouseMove)
+    updatingFromThumb.value = false
   }
 
   thumbRef.addEventListener('mousedown', mousedown)
