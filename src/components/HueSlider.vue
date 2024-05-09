@@ -1,5 +1,5 @@
 <template>
-  <div ref="hueSelector" @mousedown="handlePositionAndStartDragging" class="hue-selector">
+  <div ref="hueSlider" @mousedown="handlePositionAndStartDragging" class="hue-selector">
     <SliderThumb
       @setThumbRef="handleThumbEvents"
       :thumbStyle="{ left: hueLeftPosition }"
@@ -16,7 +16,7 @@ import SliderThumb from './SliderThumb.vue'
 
 const emit = defineEmits(['setHue'])
 
-const hueSelector = ref(null)
+const hueSlider = ref(null)
 const thumbChildRef = ref(null)
 
 const hue = inject('hue')
@@ -43,15 +43,15 @@ const hueLeftPosition = computed(() => {
 const handleThumbEvents = (thumbRef) => {
   try {
     // Precondiciones: Verificar que los inputs necesarios no sean nulos
-    if (!thumbRef || !hueSelector.value || !hueSelector.value) {
-      throw new Error('ThumbRef and hueSelector must be initialized and non-null.')
+    if (!thumbRef || !hueSlider.value || !hueSlider.value) {
+      throw new Error('ThumbRef and hueSlider must be initialized and non-null.')
     }
 
     thumbChildRef.value = thumbRef
 
-    const hueSelectorWidth = hueSelector.value.offsetWidth
-    if (hueSelectorWidth <= 0) {
-      throw new Error('hueSelector width must be positive.')
+    const hueSliderWidth = hueSlider.value.offsetWidth
+    if (hueSliderWidth <= 0) {
+      throw new Error('hueSlider width must be positive.')
     }
 
     let initialLeftMousePosition = null
@@ -64,10 +64,10 @@ const handleThumbEvents = (thumbRef) => {
       // Calcula nueva posición garantizando que esté dentro de los límites
       const xPosition = basePosition + pageX - initialLeftMousePosition
 
-      const clampedXPosition = Math.min(Math.max(xPosition, 0), hueSelectorWidth)
+      const clampedXPosition = Math.min(Math.max(xPosition, 0), hueSliderWidth)
 
       // Postcondition: xPosition y yPosition deben estar dentro de los límites del paleta.
-      if (clampedXPosition < 0 || clampedXPosition > hueSelectorWidth) {
+      if (clampedXPosition < 0 || clampedXPosition > hueSliderWidth) {
         throw new Error('clampedXPosition out of bounds.')
       }
 
@@ -79,7 +79,7 @@ const handleThumbEvents = (thumbRef) => {
       if (initialLeftMousePosition !== null) {
         const newHuePosition = calculateNewPosition(e.pageX)
 
-        let newLeftPositionPercent = (newHuePosition * 100) / hueSelectorWidth
+        let newLeftPositionPercent = (newHuePosition * 100) / hueSliderWidth
         newLeftPositionPercent = ((360 * newLeftPositionPercent) / 100)
         newLeftPositionPercent = Math.round(newLeftPositionPercent)
 
@@ -93,7 +93,7 @@ const handleThumbEvents = (thumbRef) => {
       // Establece las variables iniciales cuando se presiona el mouse
       initialLeftMousePosition = e.pageX
       initialHueValue = hue.value
-      basePosition = (hueSelectorWidth * (initialHueValue * 100) / 360) / 100
+      basePosition = (hueSliderWidth * (initialHueValue * 100) / 360) / 100
 
       document.body.addEventListener('mousemove', mousemove, { passive: true })
     }
@@ -140,14 +140,14 @@ const interpolateValue = (entry, minReturn, maxReturn) => {
 }
 
 const handlePositionAndStartDragging = (e) => {
-  if (!hueSelector.value) throw new Error('hueSelector cannot be null')
+  if (!hueSlider.value) throw new Error('hueSlider cannot be null')
 
-  const selectorLeftPosition = hueSelector.value.getBoundingClientRect().left
+  const selectorLeftPosition = hueSlider.value.getBoundingClientRect().left
 
   let deltaX = e.pageX - selectorLeftPosition
-  deltaX += interpolateValue((deltaX * 100) / hueSelector.value.offsetWidth, -6, 6)
+  deltaX += interpolateValue((deltaX * 100) / hueSlider.value.offsetWidth, -6, 6)
 
-  const leftPercent = (deltaX * 100) / hueSelector.value.offsetWidth
+  const leftPercent = (deltaX * 100) / hueSlider.value.offsetWidth
 
   // Set Hue
   let newHueValue = (360 * leftPercent) / 100

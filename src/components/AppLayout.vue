@@ -6,7 +6,7 @@
       <!-- <div /> -->
       <slot name="pallete" />
       <slot name="transparencySlider" />
-      <slot name="hueSelector" />
+      <slot name="hueSlider" />
     </div>
   </div>
 </template>
@@ -31,6 +31,6 @@ const isOpen = inject('isOpen')
     left: calc(100% + 10px);
     display: grid;
     grid-template-columns: 1fr min-content;
-    gap: 10px;
+    gap: 8px;
   }
 </style>

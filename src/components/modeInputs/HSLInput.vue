@@ -38,7 +38,7 @@ const setValue = (n, action) => {
 <style scoped>
 div {
   display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(4, minmax(27px, 1fr));
+  gap: 3px;
+  grid-template-columns: repeat(4, minmax(20px, 1fr));
 }
 </style>

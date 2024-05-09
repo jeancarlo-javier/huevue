@@ -104,3 +104,26 @@ const unselectInputText = (e) => {
   }
 }
 </script>
+
+<style scoped>
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  all: unset;
+  width: 100%;
+  font: inherit;
+  color: black;
+  background-color: transparent;
+  font-size: 12px;
+  text-align: center;
+  margin: 4px 0;
+  background: #eaeaea;
+  border-radius: 6px;
+}
+
+/* Para Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+</style>

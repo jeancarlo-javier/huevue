@@ -19,21 +19,13 @@
 <script setup>
 import SliderThumb from './SliderThumb.vue'
 import { hsbToHsl, hslToHsb } from '../utils/color-conversions.js'
-import { defineProps, computed, toRefs, defineEmits, onUnmounted, ref, inject, watch, onUpdated } from 'vue'
-
-const props = defineProps({
-  hue: {
-    type: Number,
-    required: true
-  }
-})
+import { computed, defineEmits, onUnmounted, ref, inject, watch, onUpdated } from 'vue'
 
 const emit = defineEmits(['setLightness', 'setSaturation'])
 
-const { hue } = toRefs(props)
-
 const saturation = inject('saturation')
 const lightness = inject('lightness')
+const hue = inject('hue')
 
 const hueBackground = computed(() => `hsl(${hue.value}deg 100% 50%)`)
 

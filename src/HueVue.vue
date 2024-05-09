@@ -1,37 +1,26 @@
 <template>
   <AppLayout>
     <template v-slot:colorDisplay>
-      <ColorDisplay :hue="hue" @handleOpen="this.handleOpen" />
+      <ColorDisplay @handleOpen="this.handleOpen" />
     </template>
     <template v-slot:colorInput>
-      <ColorInput>
-        <template v-slot:input>
-          <HSLInput
-            @setLightness="setLightness"
-            @setSaturation="setSaturation"
-            @setHue="setHue"
-            @setTransparency="setTransparency"
-          />
-        </template>
-      </ColorInput>
+      <ColorInput
+        @setLightness="setLightness"
+        @setSaturation="setSaturation"
+        @setHue="setHue"
+        @setTransparency="setTransparency"
+      />
     </template>
     <template v-slot:pallete>
-      <PalleteSelector @setLightness="setLightness" @setSaturation="setSaturation" :hue="hue" />
+      <PalleteSelector @setLightness="setLightness" @setSaturation="setSaturation" />
     </template>
-    <template v-slot:hueSelector>
-      <HueSelector @setHue="setHue" :hue="hue" />
+    <template v-slot:hueSlider>
+      <HueSlider @setHue="setHue" />
     </template>
     <template v-slot:transparencySlider>
       <TransparencySlider @setTransparency="setTransparency" />
     </template>
   </AppLayout>
-  <div :style="{ height: '200px' }"></div>
-  <div>
-    <input v-model.number="hue" type="range" min="0" max="360" />
-    <input v-model.number="saturation" type="range" min="0" max="100" />
-    <input v-model.number="lightness" type="range" min="0" max="100" />
-    <input v-model.number="transparency" type="range" min="0" max="100" />
-  </div>
 </template>
 
 <script>
@@ -39,10 +28,9 @@ import { ref, provide, watch } from 'vue'
 import AppLayout from './components/AppLayout.vue'
 import ColorDisplay from './components/ColorDisplay.vue'
 import PalleteSelector from './components/PalleteSelector.vue'
-import HueSelector from './components/HueSlider.vue'
+import HueSlider from './components/HueSlider.vue'
 import TransparencySlider from './components/TransparencySlider.vue'
 import ColorInput from './components/ColorInput.vue'
-import HSLInput from './components/modeInputs/HSLInput.vue'
 import colorModes from './config/colorModes'
 
 export default {
@@ -56,10 +44,9 @@ export default {
     AppLayout,
     ColorDisplay,
     PalleteSelector,
-    HueSelector,
+    HueSlider,
     TransparencySlider,
-    ColorInput,
-    HSLInput
+    ColorInput
   },
   setup (props) {
     const isOpen = ref(true)
@@ -69,7 +56,7 @@ export default {
     const hue = ref(0)
     const saturation = ref(100)
     const lightness = ref(50)
-    const transparency = ref(100)
+    const transparency = ref(50)
 
     const defaultMode = colorModes.find(mode => mode.id === props.mode)
 
@@ -116,10 +103,6 @@ export default {
     }, { immediate: true })
 
     return {
-      hue,
-      saturation,
-      lightness,
-      transparency,
       handleOpen,
       setHue,
       setSaturation,
