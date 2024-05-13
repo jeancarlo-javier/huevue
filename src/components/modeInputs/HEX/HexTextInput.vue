@@ -17,7 +17,7 @@ import suggestHexColor from '@/utils/suggestHexColor.js'
 const props = defineProps({
   inputValue: {
     type: String,
-    required: true
+    default: ''
   }
 })
 

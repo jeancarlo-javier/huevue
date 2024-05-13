@@ -46,7 +46,7 @@ export default {
   props: {
     mode: {
       type: String,
-      default: 'hex'
+      default: 'hsl'
     }
   },
   components: {

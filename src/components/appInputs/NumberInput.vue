@@ -59,6 +59,7 @@ const setValue = (e) => {
     else value += 1
 
     value = Math.min(value, max.value)
+    e.target.value = value
     lastValidNumber.value = value
 
     return emit('setValue', Math.round(value))
@@ -72,6 +73,7 @@ const setValue = (e) => {
     else value -= 1
 
     value = Math.max(value, min.value)
+    e.target.value = value
     lastValidNumber.value = value
 
     return emit('setValue', Math.round(value))
@@ -102,10 +104,16 @@ const selectInputText = (e) => {
 const unselectInputText = (e) => {
   userIsTyping.value = false
 
-  if (e.target.value === '') {
+  const inputVal = parseFloat(e.target.value)
+
+  if (isNaN(inputVal) || e.target.value === '') {
     e.target.value = lastValidNumber.value
     emit('setValue', lastValidNumber.value)
+    return
   }
+
+  lastValidNumber.value = inputVal
+  emit('setValue', inputVal)
 }
 </script>
 
