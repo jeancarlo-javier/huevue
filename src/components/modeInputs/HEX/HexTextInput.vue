@@ -1,5 +1,6 @@
 <template>
   <input
+    id="hv-hex-text-input"
     @keydown="setValue"
     @click="selectInputText"
     @blur="unselectInputText"
@@ -11,6 +12,7 @@
 <script setup>
 import { defineProps, ref, toRefs, watch } from 'vue'
 import { validateHexColor } from '@/utils/color-validator.js'
+import suggestHexColor from '@/utils/suggestHexColor.js'
 
 const props = defineProps({
   inputValue: {
@@ -47,8 +49,20 @@ const setValue = (e) => {
     }
 
     // Find posible values of the current value
+    const suggestion = suggestHexColor(value)
+
+    if (suggestion) {
+      e.target.value = suggestion
+
+      e.target.blur()
+
+      return emit('setValue', suggestion)
+    }
+
     e.target.value = lastValidValue.value
     emit('setValue', lastValidValue.value)
+
+    e.target.blur()
   }
 }
 
@@ -64,10 +78,15 @@ const selectInputText = (e) => {
 const unselectInputText = (e) => {
   userIsTyping.value = false
 
-  if (e.target.value === '') {
-    e.target.value = lastValidValue.value
-    emit('setValue', lastValidValue.value)
+  const isValid = validateHexColor(e.target.value)
+
+  if (isValid) {
+    emit('setValue', e.target.value)
+    return
   }
+
+  e.target.value = lastValidValue.value
+  emit('setValue', lastValidValue.value)
 }
 </script>
 
