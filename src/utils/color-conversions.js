@@ -43,13 +43,15 @@ export function hslToHsb (h, s, l) {
 }
 
 export function hslToRgb (h, s, l) {
-  if (h === 360) h = 0 // Normaliza h a 0 si es 360
-  s /= 100
-  l /= 100
+  if (h === 360) h = 0 // Nomalize h to 0 if it's 360
 
-  const c = (1 - Math.abs(2 * l - 1)) * s
-  const x = c * (1 - Math.abs((h / 60) % 2 - 1))
-  const m = l - c / 2
+  s /= 100 // Convert saturation from percentage to a 0-1 scale
+  l /= 100 // Convert lightness from percentage to a 0-1 scale
+
+  const c = (1 - Math.abs(2 * l - 1)) * s // Calculate chroma based on lightness and saturation
+  const x = c * (1 - Math.abs((h / 60) % 2 - 1)) // Calculate second largest component of color
+  const m = l - c / 2 // Calculate the middle point of the color
+
   let r = 0; let g = 0; let b = 0
 
   if (h >= 0 && h < 60) {
@@ -130,4 +132,35 @@ export function hexToHsl (hexColor) {
   l = Math.round(l * 100)
 
   return { h, s, l }
+}
+
+export function rgbToHsl (r, g, b) {
+  r /= 255
+  g /= 255
+  b /= 255
+
+  const max = Math.max(r, g, b)
+  const min = Math.min(r, g, b)
+  let h; let s; const l = (max + min) / 2
+
+  if (max === min) {
+    h = s = 0 // achromatic
+  } else {
+    const d = max - min
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0)
+        break
+      case g:
+        h = (b - r) / d + 2
+        break
+      case b:
+        h = (r - g) / d + 4
+        break
+    }
+    h /= 6
+  }
+
+  return { h: h * 360, s: s * 100, l: l * 100 }
 }

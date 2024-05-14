@@ -15,6 +15,13 @@
       @setLightness="setLightness"
       @setTransparency="setTransparency"
     />
+    <RGBInputs
+      v-if="mode.id ==='rgb'"
+      @setHue="setHue"
+      @setSaturation="setSaturation"
+      @setLightness="setLightness"
+      @setTransparency="setTransparency"
+    />
   </div>
 </template>
 
@@ -22,6 +29,7 @@
 import HSLInputs from './modeInputs/HSLInputs.vue'
 import HEXInputs from './modeInputs/HEX/HEXInputs.vue'
 import { computed, inject, defineEmits } from 'vue'
+import RGBInputs from './modeInputs/RGBInputs.vue'
 
 const mode = inject('mode')
 

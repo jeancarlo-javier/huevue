@@ -2,8 +2,24 @@ import { describe, it, expect, vi } from 'vitest'
 import { shallowMount } from '@vue/test-utils'
 import HEXTextInput from '@/components/modeInputs/HEX/HEXTextInput.vue'
 import NumberInput from '@/components/appInputs/NumberInput.vue'
+import RGBInputs from '@/components/modeInputs/RGBInputs.vue'
+import { ref } from 'vue'
 
-describe('HexInputs', () => {
+const baseProvider = ({
+  showTransparency = false,
+  hue = 0,
+  saturation = 100,
+  lightness = 50,
+  transparency = 50
+} = {}) => ({
+  showTransparency: ref(showTransparency),
+  hue: ref(hue),
+  saturation: ref(saturation),
+  lightness: ref(lightness),
+  transparency: ref(transparency)
+})
+
+describe('ColorModeInputs', () => {
   describe('NumberInput', () => {
     it('should render and check default props', () => {
       const wrapper = shallowMount(NumberInput, {
@@ -359,6 +375,145 @@ describe('HexInputs', () => {
 
       expect(wrapper.emitted()).toHaveProperty('setValue')
       expect(wrapper.emitted().setValue[0][0]).toBe('#123456')
+    })
+  })
+
+  describe('RGBTextInputs', () => {
+    it('should render', () => {
+      const wrapper = shallowMount(RGBInputs, {
+        global: {
+          provide: baseProvider({
+            showTransparency: true
+          })
+        }
+      })
+
+      const inputs = wrapper.findAllComponents({ name: 'NumberInput' })
+
+      expect(inputs.length).toBe(4)
+    })
+
+    it('check default props and refs', () => {
+      const wrapper = shallowMount(RGBInputs, {
+        global: {
+          provide: baseProvider()
+        }
+      })
+
+      const red = wrapper.vm.red
+      const green = wrapper.vm.green
+      const blue = wrapper.vm.blue
+      const transparency = wrapper.vm.transparency
+
+      expect(red).toBe(0)
+      expect(green).toBe(0)
+      expect(blue).toBe(0)
+      expect(transparency).toBe(50)
+
+      const updatingFromInput = wrapper.vm.updatingFromInput
+      expect(updatingFromInput).toBe(false)
+    })
+
+    it('check default emits in defineEmits', () => {
+      const wrapper = shallowMount(RGBInputs, {
+        global: {
+          provide: baseProvider()
+        }
+      })
+
+      const emits = wrapper.vm.$options.emits
+
+      expect(emits).toBeDefined()
+
+      expect(emits).toContain('setHue')
+      expect(emits).toContain('setSaturation')
+      expect(emits).toContain('setLightness')
+      expect(emits).toContain('setTransparency')
+    })
+
+    it('check injections', () => {
+      const wrapper = shallowMount(RGBInputs, {
+        global: {
+          provide: baseProvider({
+            showTransparency: true
+          })
+        }
+      })
+
+      const { hue, saturation, lightness, transparency } = wrapper.vm
+
+      expect(hue).toBeDefined()
+      expect(saturation).toBeDefined()
+      expect(lightness).toBeDefined()
+      expect(transparency).toBeDefined()
+    })
+
+    it('watch should update the refs if the props change', async () => {
+      const provider = baseProvider({
+        showTransparency: true
+      })
+
+      const wrapper = shallowMount(RGBInputs, {
+        global: {
+          provide: provider
+        }
+      })
+
+      provider.hue.value = 180
+      provider.saturation.value = 25
+      provider.lightness.value = 25
+
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.vm.red).toBe(48)
+      expect(wrapper.vm.green).toBe(80)
+      expect(wrapper.vm.blue).toBe(80)
+    })
+
+    it('should emit the hsl update event if setHsl is called', () => {
+      const wrapper = shallowMount(RGBInputs, {
+        global: {
+          provide: baseProvider({
+            showTransparency: true
+          })
+        }
+      })
+
+      const { setHsl } = wrapper.vm
+
+      setHsl(180, 25, 25)
+
+      expect(wrapper.emitted()).toHaveProperty('setHue')
+      expect(wrapper.emitted()).toHaveProperty('setSaturation')
+      expect(wrapper.emitted()).toHaveProperty('setLightness')
+
+      expect(wrapper.emitted().setHue[0][0]).toBe(180)
+      expect(wrapper.emitted().setSaturation[0][0]).toBe(25)
+      expect(wrapper.emitted().setLightness[0][0]).toBe(25)
+    })
+
+    it('should emit hsl events if setRed, setGreen, setBlue are called', () => {
+      const wrapper = shallowMount(RGBInputs, {
+        global: {
+          provide: baseProvider({
+            showTransparency: true
+          })
+        }
+      })
+
+      const { setRed, setGreen, setBlue } = wrapper.vm
+
+      setRed(255)
+      setGreen(255)
+      setBlue(255)
+
+      expect(wrapper.emitted()).toHaveProperty('setHue')
+      expect(wrapper.emitted()).toHaveProperty('setSaturation')
+      expect(wrapper.emitted()).toHaveProperty('setLightness')
+
+      expect(wrapper.vm.red).toBe(255)
+      expect(wrapper.vm.green).toBe(255)
+      expect(wrapper.vm.blue).toBe(255)
     })
   })
 })

@@ -40,13 +40,13 @@ import HueSlider from './components/HueSlider.vue'
 import TransparencySlider from './components/TransparencySlider.vue'
 import ColorInput from './components/ColorInput.vue'
 import colorModes from './config/colorModes'
-import { hslToHex } from './utils/color-conversions.js'
+import { hslToHex, hslToRgb } from './utils/color-conversions.js'
 
 export default {
   props: {
     mode: {
       type: String,
-      default: 'hsl'
+      default: 'rgb'
     }
   },
   components: {
@@ -120,6 +120,10 @@ export default {
         document.body.style.background = hex
       } else if (mode.value.id === 'hsl') {
         document.body.style.background = HSLColor.value
+      } else if (mode.value.id === 'rgb') {
+        const { r, g, b } = hslToRgb(hue.value, saturation.value, lightness.value)
+
+        document.body.style.background = `rgb(${r}, ${g}, ${b}${showTransparency.value ? `, ${transparency.value / 100}` : ''})`
       }
     }, { immediate: true })
 
