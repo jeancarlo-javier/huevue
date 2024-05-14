@@ -3,21 +3,7 @@ import { shallowMount } from '@vue/test-utils'
 import HEXTextInput from '@/components/modeInputs/HEX/HEXTextInput.vue'
 import NumberInput from '@/components/appInputs/NumberInput.vue'
 import RGBInputs from '@/components/modeInputs/RGBInputs.vue'
-import { ref } from 'vue'
-
-const baseProvider = ({
-  showTransparency = false,
-  hue = 0,
-  saturation = 100,
-  lightness = 50,
-  transparency = 50
-} = {}) => ({
-  showTransparency: ref(showTransparency),
-  hue: ref(hue),
-  saturation: ref(saturation),
-  lightness: ref(lightness),
-  transparency: ref(transparency)
-})
+import baseProvider from './utils/baseProvider'
 
 describe('ColorModeInputs', () => {
   describe('NumberInput', () => {
@@ -396,7 +382,9 @@ describe('ColorModeInputs', () => {
     it('check default props and refs', () => {
       const wrapper = shallowMount(RGBInputs, {
         global: {
-          provide: baseProvider()
+          provide: baseProvider({
+            hue: 0, saturation: 0, lightness: 0, transparency: 0
+          })
         }
       })
 
@@ -408,7 +396,7 @@ describe('ColorModeInputs', () => {
       expect(red).toBe(0)
       expect(green).toBe(0)
       expect(blue).toBe(0)
-      expect(transparency).toBe(50)
+      expect(transparency).toBe(0)
 
       const updatingFromInput = wrapper.vm.updatingFromInput
       expect(updatingFromInput).toBe(false)

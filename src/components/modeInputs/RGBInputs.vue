@@ -43,13 +43,14 @@ const updatingFromInput = ref(false)
 watch([hue, saturation, lightness], () => {
   if (!updatingFromInput.value) {
     const { r, g, b } = hslToRgb(hue.value, saturation.value, lightness.value)
+
     red.value = r
     green.value = g
     blue.value = b
   }
 
   updatingFromInput.value = false
-})
+}, { immediate: true })
 
 const setHsl = (h, s, l) => {
   emit('setHue', h)
