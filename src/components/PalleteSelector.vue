@@ -184,10 +184,10 @@ const handlePositionAndStartDragging = (e) => {
   const selectorLeftPosition = paletteSelector.value.getBoundingClientRect().left
   const selectorTopPosition = paletteSelector.value.getBoundingClientRect().top
 
-  let deltaX = e.pageX - selectorLeftPosition
+  let deltaX = e.clientX - selectorLeftPosition
   deltaX += interpolateValue((deltaX * 100) / paletteSelector.value.offsetWidth, -6, 6)
 
-  let deltaY = paletteSelector.value.offsetWidth - (e.pageY - selectorTopPosition)
+  let deltaY = paletteSelector.value.offsetWidth - (e.clientY - selectorTopPosition)
   deltaY += interpolateValue((deltaY * 100) / paletteSelector.value.offsetHeight, -6, 6)
 
   const leftPercent = (deltaX * 100) / paletteSelector.value.offsetWidth
@@ -203,8 +203,8 @@ const handlePositionAndStartDragging = (e) => {
 
   syntheticMouseDownState.value = {
     active: true,
-    clientX: e.clientX,
-    clientY: e.clientY
+    clientX: e.pageX,
+    clientY: e.pageY
   }
 }
 

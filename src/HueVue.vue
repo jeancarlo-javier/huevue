@@ -67,7 +67,7 @@ export default {
     const lightness = ref(50)
     const transparency = ref(50)
 
-    const showTransparency = ref(false)
+    const showTransparency = ref(true)
 
     const defaultMode = colorModes.find(mode => mode.id === props.mode)
 

@@ -153,7 +153,7 @@ const handlePositionAndStartDragging = (e) => {
 
   const selectorTopPosition = transparencySelector.value.getBoundingClientRect().bottom
 
-  let deltaY = selectorTopPosition - e.pageY
+  let deltaY = selectorTopPosition - e.clientY
   deltaY += interpolateValue((deltaY * 100) / transparencySelector.value.offsetHeight, -6, 6)
 
   if (!deltaY) return
@@ -165,8 +165,8 @@ const handlePositionAndStartDragging = (e) => {
 
   syntheticMouseDownState.value = {
     active: true,
-    clientX: e.clientX,
-    clientY: e.clientY
+    clientX: e.pageX,
+    clientY: e.pageY
   }
 }
 

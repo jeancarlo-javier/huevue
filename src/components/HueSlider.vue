@@ -144,7 +144,7 @@ const handlePositionAndStartDragging = (e) => {
 
   const selectorLeftPosition = hueSlider.value.getBoundingClientRect().left
 
-  let deltaX = e.pageX - selectorLeftPosition
+  let deltaX = e.clientX - selectorLeftPosition
   deltaX += interpolateValue((deltaX * 100) / hueSlider.value.offsetWidth, -6, 6)
 
   const leftPercent = (deltaX * 100) / hueSlider.value.offsetWidth
@@ -157,7 +157,7 @@ const handlePositionAndStartDragging = (e) => {
 
   syntheticMouseDownState.value = {
     active: true,
-    clientX: e.clientX,
+    clientX: e.pageX,
     clientY: e.clientY
   }
 }
