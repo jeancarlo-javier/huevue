@@ -1,5 +1,8 @@
 <template>
-  <div class="color-input-container">
+  <div
+    class="color-input-container"
+    :style="{ width: showTransparency ? '100%' : 'calc(100% - 8px)' }"
+  >
     <div class="inputs-container">
       <span class="mode-text">{{ modeText }}</span>
       <HSLInputs
@@ -38,6 +41,8 @@ import RGBInputs from './modeInputs/RGBInputs.vue'
 import colorModes from '@/config/colorModes'
 
 const mode = inject('mode')
+
+const showTransparency = inject('showTransparency')
 
 if (!mode) {
   throw new Error('No mode provided')
@@ -78,7 +83,6 @@ const modeText = computed(() => {
   position: relative;
   grid-column: 1 / -1;
   height: 30px;
-  width: 100%;
   display: flex;
 }
 .inputs-container {

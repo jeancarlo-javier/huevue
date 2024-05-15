@@ -14,6 +14,7 @@
       :inputValue="lightness" />
     <NumberInput
       v-if="showTransparency"
+      :percent="true"
       @setValue="(n) => setValue(n, 'setTransparency')"
       :min="0" :max="100"
       :inputValue="transparency" />

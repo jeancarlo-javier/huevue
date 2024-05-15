@@ -47,7 +47,7 @@ export default {
   props: {
     mode: {
       type: String,
-      default: 'rgb'
+      default: 'hsl'
     }
   },
   components: {

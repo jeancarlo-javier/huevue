@@ -1,12 +1,20 @@
 <template>
-  <input
-    @keydown="setValue"
-    @click="selectInputText"
-    @blur="unselectInputText"
-    :value="inputValue"
-    ref="hueInput"
-    :min="min" :max="max"
-    type="number" />
+  <div
+    :class="{
+      'hv-input-editing': userIsTyping,
+      'hv-input-number-container': true,
+      'hv-percent': percent}">
+    <input
+      @keydown="setValue"
+      @click="selectInputText"
+      @blur="unselectInputText"
+      :value="inputValue"
+      ref="hueInput"
+      :min="min" :max="max"
+      type="number"
+      :class="{ 'hv-input-percent': percent }" />
+      <span v-if="percent" class="hv-input-number-percent">%</span>
+  </div>
 </template>
 
 <script setup>
@@ -24,6 +32,10 @@ const props = defineProps({
   max: {
     type: Number,
     default: 100
+  },
+  percent: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -112,8 +124,10 @@ const unselectInputText = (e) => {
     return
   }
 
-  lastValidNumber.value = inputVal
-  emit('setValue', inputVal)
+  const normalizedValue = Math.min(max.value, Math.max(inputVal, min.value))
+
+  lastValidNumber.value = normalizedValue
+  emit('setValue', normalizedValue)
 }
 </script>
 
@@ -133,9 +147,37 @@ input[type="number"] {
   border-radius: 6px;
 }
 
+.hv-percent {
+  flex: 1 1 calc(25% + 132px);
+}
+
+.hv-percent input[type="number"] {
+  padding-right: 12px;
+}
+
 /* Para Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.hv-input-number-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: relative;
+}
+
+.hv-input-number-container .hv-input-number-percent {
+  color: #000000;
+  font-size: 12px;
+  position: absolute;
+  right: 3px;
+  top: 7px;
+  pointer-events: none;
+}
+
+.hv-input-editing .hv-input-number-percent {
+  color: #7C7C7C;
 }
 </style>

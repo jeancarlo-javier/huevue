@@ -6,6 +6,7 @@
       :style="{ flex: 2 }" />
     <NumberInput
       v-if="showTransparency"
+      :percent="true"
       @setValue="(n) => setTransparency(n)"
       :min="0" :max="100"
       :inputValue="transparency"
