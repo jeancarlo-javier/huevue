@@ -9,6 +9,7 @@
         @setSaturation="setSaturation"
         @setHue="setHue"
         @setTransparency="setTransparency"
+        @setMode="setMode"
       />
     </template>
     <template v-slot:pallete>
@@ -71,7 +72,7 @@ export default {
 
     const defaultMode = colorModes.find(mode => mode.id === props.mode)
 
-    if (!defaultMode) throw new Error('Mode is not supported or is no valid')
+    if (!defaultMode) throw new Error('Mode is not supported or is not valid')
 
     const mode = ref(defaultMode)
 
@@ -95,6 +96,10 @@ export default {
       transparency.value = value
     }
 
+    const setMode = (modeId) => {
+      mode.value = colorModes.find(m => m.id === modeId)
+    }
+
     provide('isOpen', isOpen)
     provide('showTransparency', showTransparency)
     provide('HSLColor', HSLColor)
@@ -105,7 +110,7 @@ export default {
     provide('transparency', transparency)
     provide('mode', mode)
 
-    watch([hue, saturation, lightness, transparency, showTransparency], () => {
+    watch([mode, hue, saturation, lightness, transparency, showTransparency], () => {
       let hslColorContent = `${hue.value}deg ${saturation.value}% ${lightness.value}%`
 
       if (showTransparency.value) {
@@ -133,9 +138,13 @@ export default {
       setSaturation,
       setLightness,
       setTransparency,
+      setMode,
       // ! Temporal
       showTransparency
     }
   }
 }
 </script>
+
+<style scoped>
+</style>
