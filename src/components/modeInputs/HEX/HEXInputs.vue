@@ -37,7 +37,8 @@ const hexColor = computed(() => {
 
   // ! Temporal
   if (!isValid) {
-    throw new Error(`Invalid hex color: ${hex}`)
+    console.error(`Invalid hex color: ${hex}`)
+    return '#000000'
   }
   // ! Temporal
 

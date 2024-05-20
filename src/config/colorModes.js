@@ -2,19 +2,22 @@ const modes = [
   {
     id: 'hex',
     text: 'HEX',
-    allowsTransparency: true
+    allowsTransparency: true,
+    defaultValue: '#FF0000'
   },
   {
     id: 'hsl',
     text: 'HSL',
     allowsTransparency: true,
-    transparencyText: 'HSLA'
+    transparencyText: 'HSLA',
+    defaultValue: 'hsl(0deg 100% 50%)'
   },
   {
     id: 'rgb',
     text: 'RGB',
     allowsTransparency: true,
-    transparencyText: 'RGBA'
+    transparencyText: 'RGBA',
+    defaultValue: 'rgb(255, 0, 0)'
   }
 ]
 
