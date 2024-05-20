@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, toRefs, watch } from 'vue'
+import { ref, toRefs, watch } from 'vue'
 import { validateHexColor } from '@/utils/color-validator.js'
 import suggestHexColor from '@/utils/suggestHexColor.js'
 

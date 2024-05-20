@@ -1,5 +1,5 @@
 <template>
-  <div ref="hueSlider" @mousedown="handlePositionAndStartDragging" class="hue-slider">
+  <div data-test-id="hue-slider" ref="hueSlider" @mousedown="handlePositionAndStartDragging" class="hue-slider">
     <SliderThumb
       @setThumbRef="handleThumbEvents"
       :thumbStyle="{ left: hueLeftPosition }"
@@ -10,7 +10,7 @@
 
 <script setup>
 import {
-  computed, defineEmits, ref, onUnmounted, onUpdated, inject
+  computed, ref, onUnmounted, onUpdated, inject
 } from 'vue'
 import SliderThumb from './SliderThumb.vue'
 
@@ -39,6 +39,22 @@ const hueLeftPosition = computed(() => {
   }
 })
 
+const calculateNewPosition = (pageX, initialLeftMousePosition, hueSliderWidth, basePosition) => {
+  if (!pageX || initialLeftMousePosition === null || initialLeftMousePosition === undefined) throw new Error('Mouse position data and initial mouse position must be valid.')
+
+  // Calcula nueva posición garantizando que esté dentro de los límites
+  const xPosition = basePosition + pageX - initialLeftMousePosition
+
+  const clampedXPosition = Math.min(Math.max(xPosition, 0), hueSliderWidth)
+
+  // Postcondition: xPosition y yPosition deben estar dentro de los límites del paleta.
+  if (clampedXPosition < 0 || clampedXPosition > hueSliderWidth) {
+    throw new Error('clampedXPosition out of bounds.')
+  }
+
+  return clampedXPosition
+}
+
 // Maneja los eventos de interacción con el thumb del slider.
 const handleThumbEvents = (thumbRef) => {
   try {
@@ -58,26 +74,10 @@ const handleThumbEvents = (thumbRef) => {
     let initialHueValue = 0
     let basePosition = null
 
-    const calculateNewPosition = (pageX) => {
-      if (!pageX || !initialLeftMousePosition) throw new Error('Mouse position data and initial mouse position must be valid.')
-
-      // Calcula nueva posición garantizando que esté dentro de los límites
-      const xPosition = basePosition + pageX - initialLeftMousePosition
-
-      const clampedXPosition = Math.min(Math.max(xPosition, 0), hueSliderWidth)
-
-      // Postcondition: xPosition y yPosition deben estar dentro de los límites del paleta.
-      if (clampedXPosition < 0 || clampedXPosition > hueSliderWidth) {
-        throw new Error('clampedXPosition out of bounds.')
-      }
-
-      return clampedXPosition
-    }
-
     const mousemove = (e) => {
       // Solo mueve si se ha inicializado la posición inicial del mouse
       if (initialLeftMousePosition !== null) {
-        const newHuePosition = calculateNewPosition(e.pageX)
+        const newHuePosition = calculateNewPosition(e.pageX, initialLeftMousePosition, hueSliderWidth, basePosition)
 
         let newLeftPositionPercent = (newHuePosition * 100) / hueSliderWidth
         newLeftPositionPercent = ((360 * newLeftPositionPercent) / 100)

@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { inject, computed, defineEmits } from 'vue'
+import { inject, computed } from 'vue'
 import HexTextInput from './HEXTextInput.vue'
 import NumberInput from '../../appInputs/NumberInput.vue'
 import { hslToHex, hexToHsl } from '@/utils/color-conversions.js'

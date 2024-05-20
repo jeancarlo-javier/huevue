@@ -15,7 +15,7 @@
 
 <script setup>
 import {
-  computed, inject, defineEmits, ref, onUnmounted, onUpdated
+  computed, inject, ref, onUnmounted, onUpdated
 } from 'vue'
 import SliderThumb from './SliderThumb.vue'
 

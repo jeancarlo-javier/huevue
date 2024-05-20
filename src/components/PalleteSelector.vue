@@ -19,7 +19,7 @@
 <script setup>
 import SliderThumb from './SliderThumb.vue'
 import { hsbToHsl, hslToHsb } from '../utils/color-conversions.js'
-import { computed, defineEmits, onUnmounted, ref, inject, watch, onUpdated } from 'vue'
+import { computed, onUnmounted, ref, inject, watch, onUpdated } from 'vue'
 
 const emit = defineEmits(['setLightness', 'setSaturation'])
 

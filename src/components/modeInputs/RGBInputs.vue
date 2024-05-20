@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { inject, defineEmits, ref, watch } from 'vue'
+import { inject, ref, watch } from 'vue'
 import NumberInput from '../appInputs/NumberInput.vue'
 import { hslToRgb, rgbToHsl } from '@/utils/color-conversions.js'
 

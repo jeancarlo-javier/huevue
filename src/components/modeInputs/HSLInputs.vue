@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { inject, defineEmits } from 'vue'
+import { inject } from 'vue'
 import NumberInput from '../appInputs/NumberInput.vue'
 
 const emit = defineEmits(['setHue', 'setSaturation', 'setLightness', 'setTransparency'])

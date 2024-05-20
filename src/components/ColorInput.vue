@@ -27,14 +27,14 @@
         @setTransparency="setTransparency"
       />
     </div>
-    <button @click="switchMide" role="button" class="hv-change-mode">
+    <button data-test-id="hv-change-mode" @click="switchMode" role="button" class="hv-change-mode">
       <img src="@/assets/swap-ver.svg" alt="swap" />
     </button>
   </div>
 </template>
 
 <script setup>
-import { computed, inject, defineEmits } from 'vue'
+import { computed, inject } from 'vue'
 import HSLInputs from './modeInputs/HSLInputs.vue'
 import HEXInputs from './modeInputs/HEX/HEXInputs.vue'
 import RGBInputs from './modeInputs/RGBInputs.vue'
@@ -66,7 +66,7 @@ const setTransparency = (transparency) => {
   emit('setTransparency', transparency)
 }
 
-const switchMide = () => {
+const switchMode = () => {
   const currentModeIndex = colorModes.findIndex(m => m.id === mode.value.id)
   const nextModeIndex = currentModeIndex + 1 < colorModes.length ? currentModeIndex + 1 : 0
 
