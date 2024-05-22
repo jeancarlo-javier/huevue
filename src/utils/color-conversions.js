@@ -1,3 +1,5 @@
+import { validateRgbaAndConvertToObject, validateHexColor } from './color-validator'
+
 export function hsbToHsl (h, s, b) {
   const lightness = (2 - s / 100) * b / 2
   let saturation
@@ -43,7 +45,7 @@ export function hslToHsb (h, s, l) {
 }
 
 export function hslToRgb (h, s, l) {
-  if (h === 360) h = 0 // Nomalize h to 0 if it's 360
+  if (h === 360) h = 0 // Normalize h to 0 if it's 360
 
   s /= 100 // Convert saturation from percentage to a 0-1 scale
   l /= 100 // Convert lightness from percentage to a 0-1 scale
@@ -90,13 +92,23 @@ export function hslToHex (h, s, l, a) {
 }
 
 export function hexToRgb (hexColor) {
-  // Eliminar el "#" si está presente
+  if (!validateHexColor(hexColor)) {
+    throw new Error('Invalid hex color format')
+  }
+
+  // Remove the hash at the start if it's there
   hexColor = hexColor.replace(/^#/, '')
 
-  // Convertir los valores hexadecimales a RGB
-  const r = parseInt(hexColor.substring(0, 2), 16)
-  const g = parseInt(hexColor.substring(2, 4), 16)
-  const b = parseInt(hexColor.substring(4, 6), 16)
+  // If it's a shorthand hex color, convert to full form
+  if (hexColor.length === 3) {
+    hexColor = hexColor.split('').map(char => char + char).join('')
+  }
+
+  // Parse the r, g, b values
+  const bigint = parseInt(hexColor, 16)
+  const r = (bigint >> 16) & 255
+  const g = (bigint >> 8) & 255
+  const b = bigint & 255
 
   return { r, g, b }
 }
@@ -141,13 +153,14 @@ export function rgbToHsl (r, g, b) {
 
   const max = Math.max(r, g, b)
   const min = Math.min(r, g, b)
-  let h; let s; let l = (max + min) / 2
+  let h; let s; const l = (max + min) / 2
 
   if (max === min) {
     h = s = 0 // achromatic
   } else {
     const d = max - min
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+
     switch (max) {
       case r:
         h = (g - b) / d + (g < b ? 6 : 0)
@@ -159,12 +172,37 @@ export function rgbToHsl (r, g, b) {
         h = (r - g) / d + 4
         break
     }
+
     h /= 6
   }
 
-  h = Math.round(h * 360)
-  s = Math.round(s * 100)
-  l = Math.round(l * 100)
+  return {
+    h: Math.round(h * 360),
+    s: Math.round(s * 100),
+    l: Math.round(l * 100)
+  }
+}
 
-  return { h, s, l }
+export function convertToHsl (value, colorType) {
+  try {
+    if (colorType === 'hex') {
+      return hexToHsl(value)
+    }
+
+    if (colorType === 'rgb') {
+      const [isValid, rgbaColor] = validateRgbaAndConvertToObject(value)
+
+      if (isValid) {
+        const hslColor = rgbToHsl(rgbaColor.r, rgbaColor.g, rgbaColor.b)
+        console.log(hslColor)
+
+        return hslColor
+      }
+
+      return { h: 0, s: 0, l: 0 }
+    }
+  } catch (e) {
+    console.error(e.message)
+    return { h: 0, s: 0, l: 0 }
+  }
 }

@@ -42,7 +42,7 @@ import TransparencySlider from './components/TransparencySlider.vue'
 import ColorInput from './components/ColorInput.vue'
 import colorModes from './config/colorModes'
 import getColorType from './utils/color-types.js'
-import { hexToHsl, hslToHex, hslToRgb } from './utils/color-conversions.js'
+import { hslToHex, hslToRgb, convertToHsl } from './utils/color-conversions.js'
 
 const props = defineProps({
   modes: {
@@ -55,7 +55,7 @@ const props = defineProps({
   },
   value: {
     type: String,
-    default: () => colorModes[0].defaultValue
+    default: () => 'rgb(200,100,3)'
   }
 })
 
@@ -72,29 +72,19 @@ if (!defaultMode) throw new Error('Mode is not supported or is not valid')
 
 const currentMode = ref(defaultMode)
 
-const convertToHex = (value, colorType) => {
-  try {
-    switch (colorType) {
-      case 'hex':
-        return hexToHsl(value)
-      // case 'rgb':
-      //   return hslToHex(hslToRgb(value))
-      default:
-        return '#000000'
-    }
-  } catch (e) {
-    console.error(e.message)
-    return '#000000'
-  }
-}
-
 watch(() => props.value, (value) => {
   const colorType = getColorType(value)
-  const { h, s, l } = convertToHex(value, colorType)
+
+  currentMode.value = colorModes.find(m => m.id === colorType)
+
+  const { h, s, l } = convertToHsl(value, colorType)
+
+  console.log(h, s, l)
+
   hue.value = h
   saturation.value = s
   lightness.value = l
-}, { immediate: true })
+}, { immediate: true, once: true })
 
 const handleOpen = () => {
   isOpen.value = !isOpen.value
