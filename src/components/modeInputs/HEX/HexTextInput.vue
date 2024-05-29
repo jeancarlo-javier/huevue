@@ -11,7 +11,7 @@
 
 <script setup>
 import { ref, toRefs, watch } from 'vue'
-import { validateHexColor } from '@/utils/color-validator.js'
+import { validateHexColor } from '@/utils/color-validators.js'
 import suggestHexColor from '@/utils/suggestHexColor.js'
 
 const props = defineProps({

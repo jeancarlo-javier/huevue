@@ -24,26 +24,23 @@
 <script setup>
 import { inject, ref, watch } from 'vue'
 import NumberInput from '../appInputs/NumberInput.vue'
-import { hslToRgb, rgbToHsl } from '@/utils/color-conversions.js'
 
-const emit = defineEmits(['setHue', 'setSaturation', 'setLightness', 'setTransparency'])
+const emit = defineEmits(['setRgb', 'setTransparency'])
 
 const showTransparency = inject('showTransparency')
 
-const hue = inject('hue')
-const saturation = inject('saturation')
-const lightness = inject('lightness')
+const rgba = inject('rgba')
 const transparency = inject('transparency')
 
-const red = ref(0)
-const green = ref(0)
-const blue = ref(0)
+const red = ref()
+const green = ref()
+const blue = ref()
 
 const updatingFromInput = ref(false)
 
-watch([hue, saturation, lightness], () => {
+watch(rgba, (newRgba) => {
   if (!updatingFromInput.value) {
-    const { r, g, b } = hslToRgb(hue.value, saturation.value, lightness.value)
+    const { r, g, b } = newRgba
 
     red.value = r
     green.value = g
@@ -53,17 +50,10 @@ watch([hue, saturation, lightness], () => {
   updatingFromInput.value = false
 }, { immediate: true })
 
-const setHsl = (h, s, l) => {
-  emit('setHue', h)
-  emit('setSaturation', s)
-  emit('setLightness', l)
-}
-
 const setRed = (n) => {
   red.value = n
 
-  const { h, s, l } = rgbToHsl(red.value, green.value, blue.value)
-  setHsl(h, s, l)
+  emit('setRgb', { r: n, g: green.value, b: blue.value, a: rgba.a })
 
   updatingFromInput.value = true
 }
@@ -71,8 +61,7 @@ const setRed = (n) => {
 const setGreen = (n) => {
   green.value = n
 
-  const { h, s, l } = rgbToHsl(red.value, green.value, blue.value)
-  setHsl(h, s, l)
+  emit('setRgb', { r: red.value, g: n, b: blue.value, a: rgba.a })
 
   updatingFromInput.value = true
 }
@@ -80,8 +69,7 @@ const setGreen = (n) => {
 const setBlue = (n) => {
   blue.value = n
 
-  const { h, s, l } = rgbToHsl(red.value, green.value, blue.value)
-  setHsl(h, s, l)
+  emit('setRgb', { r: red.value, g: green.value, b: n, a: rgba.a })
 
   updatingFromInput.value = true
 }

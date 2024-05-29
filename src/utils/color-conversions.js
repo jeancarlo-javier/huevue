@@ -1,4 +1,4 @@
-import { validateRgbaAndConvertToObject, validateHexColor } from './color-validator'
+import { validateRgbaAndConvertToObject, validateHexColor } from './color-validators'
 
 export function hsbToHsl (h, s, b) {
   const lightness = (2 - s / 100) * b / 2

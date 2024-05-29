@@ -15,46 +15,24 @@
 </template>
 
 <script setup>
-import { inject, computed } from 'vue'
+import { inject } from 'vue'
 import HexTextInput from './HEXTextInput.vue'
 import NumberInput from '../../appInputs/NumberInput.vue'
-import { hslToHex, hexToHsl } from '@/utils/color-conversions.js'
-import { validateHexColor } from '@/utils/color-validator.js'
 
 const emit = defineEmits(['setTransparency', 'setHue', 'setSaturation', 'setLightness'])
 
 const showTransparency = inject('showTransparency')
 
-const hue = inject('hue')
-const saturation = inject('saturation')
-const lightness = inject('lightness')
 const transparency = inject('transparency')
 
-const hexColor = computed(() => {
-  const hex = hslToHex(hue.value, saturation.value, lightness.value)
-
-  const isValid = validateHexColor(hex)
-
-  // ! Temporal
-  if (!isValid) {
-    console.error(`Invalid hex color: ${hex}`)
-    return '#000000'
-  }
-  // ! Temporal
-
-  return hex
-})
+const hexColor = inject('hex')
 
 const setValue = (value) => {
-  const { h, s, l } = hexToHsl(value)
-
-  emit('setHue', h)
-  emit('setSaturation', s)
-  emit('setLightness', l)
+  emit('setHex', value)
 }
 
-const setTransparency = (value) => {
-  emit('setTransparency', value)
+const setTransparency = (newHexValue) => {
+  emit('setTransparency', newHexValue)
 }
 </script>
 

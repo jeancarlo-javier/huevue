@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { validateRgbaAndConvertToObject } from '@/utils/color-validator.js'
+import { validateRgbaAndConvertToObject } from '@/utils/color-validators.js'
 
 describe('Color Validator', () => {
   describe('validateRgbaAndConvertToObject', () => {

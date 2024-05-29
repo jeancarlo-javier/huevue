@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { shallowMount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
 import HEXTextInput from '@/components/modeInputs/HEX/HEXTextInput.vue'
 import NumberInput from '@/components/appInputs/NumberInput.vue'
 import RGBInputs from '@/components/modeInputs/RGBInputs.vue'
@@ -383,29 +383,30 @@ describe('ColorModeInputs', () => {
       const wrapper = shallowMount(RGBInputs, {
         global: {
           provide: baseProvider({
-            hue: 0, saturation: 0, lightness: 0, transparency: 0
+            showTransparency: true
           })
         }
       })
 
-      const red = wrapper.vm.red
-      const green = wrapper.vm.green
-      const blue = wrapper.vm.blue
       const transparency = wrapper.vm.transparency
 
-      expect(red).toBe(0)
-      expect(green).toBe(0)
-      expect(blue).toBe(0)
-      expect(transparency).toBe(0)
+      expect(transparency).toBe(50)
 
-      const updatingFromInput = wrapper.vm.updatingFromInput
-      expect(updatingFromInput).toBe(false)
+      const r = wrapper.vm.red
+      const g = wrapper.vm.green
+      const b = wrapper.vm.blue
+
+      expect(r).toBe(255)
+      expect(g).toBe(0)
+      expect(b).toBe(0)
     })
 
     it('check default emits in defineEmits', () => {
       const wrapper = shallowMount(RGBInputs, {
         global: {
-          provide: baseProvider()
+          provide: baseProvider({
+            showTransparency: true
+          })
         }
       })
 
@@ -413,9 +414,7 @@ describe('ColorModeInputs', () => {
 
       expect(emits).toBeDefined()
 
-      expect(emits).toContain('setHue')
-      expect(emits).toContain('setSaturation')
-      expect(emits).toContain('setLightness')
+      expect(emits).toContain('setRgb')
       expect(emits).toContain('setTransparency')
     })
 
@@ -428,11 +427,9 @@ describe('ColorModeInputs', () => {
         }
       })
 
-      const { hue, saturation, lightness, transparency } = wrapper.vm
+      const { rgba, transparency } = wrapper.vm
 
-      expect(hue).toBeDefined()
-      expect(saturation).toBeDefined()
-      expect(lightness).toBeDefined()
+      expect(rgba).toBeDefined()
       expect(transparency).toBeDefined()
     })
 
@@ -446,41 +443,22 @@ describe('ColorModeInputs', () => {
           provide: provider
         }
       })
+      expect(wrapper.vm.rgba.r).toBe(255)
+      expect(wrapper.vm.rgba.g).toBe(0)
+      expect(wrapper.vm.rgba.b).toBe(0)
 
-      provider.hue.value = 180
-      provider.saturation.value = 25
-      provider.lightness.value = 25
+      provider.rgba.r = 255
+      provider.rgba.g = 255
+      provider.rgba.b = 255
 
       await wrapper.vm.$nextTick()
 
-      expect(wrapper.vm.red).toBe(48)
-      expect(wrapper.vm.green).toBe(80)
-      expect(wrapper.vm.blue).toBe(80)
+      expect(wrapper.vm.rgba.r).toBe(255)
+      expect(wrapper.vm.rgba.g).toBe(255)
+      expect(wrapper.vm.rgba.b).toBe(255)
     })
 
-    it('should emit the hsl update event if setHsl is called', () => {
-      const wrapper = shallowMount(RGBInputs, {
-        global: {
-          provide: baseProvider({
-            showTransparency: true
-          })
-        }
-      })
-
-      const { setHsl } = wrapper.vm
-
-      setHsl(180, 25, 25)
-
-      expect(wrapper.emitted()).toHaveProperty('setHue')
-      expect(wrapper.emitted()).toHaveProperty('setSaturation')
-      expect(wrapper.emitted()).toHaveProperty('setLightness')
-
-      expect(wrapper.emitted().setHue[0][0]).toBe(180)
-      expect(wrapper.emitted().setSaturation[0][0]).toBe(25)
-      expect(wrapper.emitted().setLightness[0][0]).toBe(25)
-    })
-
-    it('should emit hsl events if setRed, setGreen, setBlue are called', () => {
+    it('should emit the setRgba event if some RGB inputs are changed', () => {
       const wrapper = shallowMount(RGBInputs, {
         global: {
           provide: baseProvider({
@@ -495,13 +473,74 @@ describe('ColorModeInputs', () => {
       setGreen(255)
       setBlue(255)
 
-      expect(wrapper.emitted()).toHaveProperty('setHue')
-      expect(wrapper.emitted()).toHaveProperty('setSaturation')
-      expect(wrapper.emitted()).toHaveProperty('setLightness')
+      expect(wrapper.emitted().setRgb.length).toBe(3)
+    })
 
-      expect(wrapper.vm.red).toBe(255)
-      expect(wrapper.vm.green).toBe(255)
-      expect(wrapper.vm.blue).toBe(255)
+    it('should emit setRgb event if rgbNumberInput are changed', () => {
+      const wrapper = mount(RGBInputs, {
+        global: {
+          provide: baseProvider({
+            showTransparency: true
+          })
+        }
+      })
+
+      const event = {
+        preventDefault: () => {},
+        target: {
+          value: '255',
+          blur: () => {}
+        },
+        key: 'Enter'
+      }
+
+      const numberInputs = wrapper.findAllComponents({ name: 'NumberInput' })
+
+      numberInputs[0].vm.setValue(event)
+      numberInputs[1].vm.setValue(event)
+      numberInputs[2].vm.setValue(event)
+
+      expect(wrapper.emitted().setRgb.length).toBe(3)
+    })
+
+    it('should emit setTransparency event if transparencyNumberInput are changed', () => {
+      const wrapper = mount(RGBInputs, {
+        global: {
+          provide: baseProvider({
+            showTransparency: true
+          })
+        }
+      })
+
+      const event = {
+        preventDefault: () => {},
+        target: {
+          value: '255',
+          blur: () => {}
+        },
+        key: 'Enter'
+      }
+
+      const numberInputs = wrapper.findAllComponents({ name: 'NumberInput' })
+
+      numberInputs[3].vm.setValue(event)
+
+      expect(wrapper.emitted().setTransparency.length).toBe(1)
+    })
+
+    it('check default props of TransparencyNumberInput', () => {
+      const wrapper = shallowMount(RGBInputs, {
+        global: {
+          provide: baseProvider({
+            showTransparency: true
+          })
+        }
+      })
+
+      const transparencyNumberInput = wrapper.findAllComponents({ name: 'NumberInput' })
+
+      expect(transparencyNumberInput[3].vm.min).toBe(0)
+      expect(transparencyNumberInput[3].vm.max).toBe(100)
     })
   })
 })
