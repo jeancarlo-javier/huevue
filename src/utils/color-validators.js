@@ -5,6 +5,11 @@ export function isHexValid (hexColor) {
   return regex.test(hexColor)
 }
 
+/**
+ * Validate an RGBA color string
+ * @param {String} color - Rgba String Color
+ * @returns {Boolean}
+ */
 export function isRgbaValid (color) {
   // Regular expressions for RGB and RGBA formats
   const rgbRegex = /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/

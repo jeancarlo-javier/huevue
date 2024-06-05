@@ -37,9 +37,9 @@
     Show Transparency
     <input v-model="showTransparency" type="checkbox" />
   </label>
-  <div :style="{ display: 'flex' }">
+  <div :style="{ display: 'flex', flexDirection: 'column' }">
     <div>
-      <h2>RGB</h2>
+      <h2>RGB: {{ rgb }}</h2>
       <div>R: {{ rgb.r }}</div>
       <div><input v-model.number="rgb.r" type="range" min="0" max="255" /></div>
       <div>G: {{ rgb.g }}</div>
@@ -69,9 +69,9 @@ import TransparencySlider from './components/TransparencySlider.vue'
 import ColorInput from './components/ColorInput.vue'
 import colorModes from './config/colorModes'
 import getColorType from './utils/color-types.js'
-import { hsbToRgb } from './utils/color-conversions.js'
+import { hsbToRgb, rgbToHsb } from './utils/color-conversions.js'
 import { isRgbaValid } from './utils/color-validators.js'
-import { rgbaStringToObject } from '@/utils/string-color-to-object.js'
+import { rgbaStringToObject } from './utils/string-color-to-object.js'
 
 const props = defineProps({
   modes: {
@@ -80,7 +80,7 @@ const props = defineProps({
   },
   value: {
     type: String,
-    default: () => 'rgb(200,100,0)'
+    default: () => 'rgb(255,0,100)'
   }
 })
 
@@ -100,15 +100,27 @@ const hex = ref('')
 
 const currentMode = ref(colorModes.find(m => m.id === 'rgb'))
 
-watch(hsb, (hsbCurrentValue) => {
-  if (currentMode.value.id === 'rgb') {
-    const { r, g, b } = hsbToRgb(hsbCurrentValue.h, hsbCurrentValue.s, hsbCurrentValue.b)
+const updatingFromHueVue = ref(false)
 
-    rgb.r = r
-    rgb.g = g
-    rgb.b = b
+watch(hsb, (hsbCurrentValue) => {
+  if (!updatingFromHueVue.value) {
+    if (currentMode.value.id === 'rgb') {
+      const { r, g, b } = hsbToRgb(hsbCurrentValue.h, hsbCurrentValue.s, hsbCurrentValue.b)
+
+      rgb.r = r
+      rgb.g = g
+      rgb.b = b
+    }
   }
+
+  updatingFromHueVue.value = false
 }, { immediate: true })
+
+const setHsb = (hsbColor) => {
+  hsb.h = hsbColor.h
+  hsb.s = hsbColor.s
+  hsb.b = hsbColor.b
+}
 
 const setDefaultRgbaValue = (value) => {
   const isValid = isRgbaValid(value)
@@ -121,8 +133,13 @@ const setDefaultRgbaValue = (value) => {
   rgb.g = rgbaObject.g
   rgb.b = rgbaObject.b
   transparency.value = rgbaObject.a * 100
+
+  updatingFromHueVue.value = true
+  const newHsbColor = rgbToHsb(rgb.r, rgb.g, rgb.b)
+  setHsb(newHsbColor)
 }
 
+// Set the default color value
 watch(() => props.value, (value) => {
   const colorType = getColorType(value)
 
@@ -135,16 +152,14 @@ const setRgb = (rgbColor) => {
   rgb.r = rgbColor.r
   rgb.g = rgbColor.g
   rgb.b = rgbColor.b
+
+  updatingFromHueVue.value = true
+  const newHsbColor = rgbToHsb(rgb.r, rgb.g, rgb.b)
+  setHsb(newHsbColor)
 }
 
 const setHex = (hexColor) => {
   hex.value = hexColor
-}
-
-const setHsb = (hsbColor) => {
-  hsb.h = hsbColor.h
-  hsb.s = hsbColor.s
-  hsb.b = hsbColor.b
 }
 
 const handleOpen = () => {

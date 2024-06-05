@@ -1,3 +1,8 @@
+/**
+ * Convert RGBA color string To Object
+ * @param {String} color - Rgba String Color
+ * @returns {Object}
+ */
 export function rgbaStringToObject (color) {
   // Combined regular expression for RGB, RGBA, and RGB percentage formats
   const combinedRegex = /^rgba?\(\s*(\d{1,3})\s*(?:,\s*|\s+)(\d{1,3})\s*(?:,\s*|\s+)(\d{1,3})(?:\s*\/\s*([\d.]+%?)|\s*,\s*([\d.]+%?))?\s*\)$/

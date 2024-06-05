@@ -21,7 +21,7 @@
       />
       <RGBInputs
         v-if="mode.id ==='rgb'"
-        @setRgba="setRgba"
+        @setRgb="setRgb"
         @setTransparency="setTransparency"
       />
     </div>
@@ -46,10 +46,10 @@ if (!mode) {
   throw new Error('No mode provided')
 }
 
-const emit = defineEmits(['setMode', 'setLightness', 'setSaturation', 'setHue', 'setTransparency', 'setRgba'])
+const emit = defineEmits(['setMode', 'setLightness', 'setSaturation', 'setHue', 'setTransparency', 'setRgb'])
 
-const setRgba = (rgbaColor) => {
-  emit('setRgba', rgbaColor)
+const setRgb = (rgbaColor) => {
+  emit('setRgb', rgbaColor)
 }
 
 const setLightness = (lightness) => {

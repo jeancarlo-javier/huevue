@@ -233,5 +233,60 @@ export function hsbToRgb (h, s, b) {
   const g = Math.round(f(3) * 255)
   const bValue = Math.round(f(1) * 255)
 
-  return { r, g, b: bValue }
+  return { r: Math.round(r), g: Math.round(g), b: Math.round(bValue) }
+}
+
+/**
+ * Converts an RGB color value to HSB.
+ * Assumes r, g, and b are contained in the set [0, 255] and
+ * returns h in the range [0, 360], s and b in the range [0, 100].
+ *
+ * @param {number} r - The red color value
+ * @param {number} g - The green color value
+ * @param {number} b - The blue color value
+ * @returns {Object} An object with properties h, s, and b
+ */
+export function rgbToHsb (r, g, b) {
+  // Ensure r, g, and b are within the range [0, 255]
+  r = Math.min(255, Math.max(0, r))
+  g = Math.min(255, Math.max(0, g))
+  b = Math.min(255, Math.max(0, b))
+
+  // Convert r, g, b from [0, 255] to [0, 1]
+  const rNorm = r / 255
+  const gNorm = g / 255
+  const bNorm = b / 255
+
+  // Find the minimum and maximum values of r, g, b
+  const max = Math.max(rNorm, gNorm, bNorm)
+  const min = Math.min(rNorm, gNorm, bNorm)
+
+  // Calculate the brightness (b)
+  const brightness = max
+
+  // Calculate the saturation (s)
+  const saturation = max === 0 ? 0 : (max - min) / max
+
+  // Calculate the hue (h)
+  let hue = 0
+  if (max === min) {
+    hue = 0 // If max and min are equal, hue is 0
+  } else if (max === rNorm) {
+    hue = (60 * ((gNorm - bNorm) / (max - min)) + 360) % 360
+  } else if (max === gNorm) {
+    hue = (60 * ((bNorm - rNorm) / (max - min)) + 120) % 360
+  } else if (max === bNorm) {
+    hue = (60 * ((rNorm - gNorm) / (max - min)) + 240) % 360
+  }
+
+  // Convert saturation and brightness to percentage
+  const saturationPercent = saturation * 100
+  const brightnessPercent = brightness * 100
+
+  // Return the HSB values as an object
+  return {
+    h: Math.round(hue),
+    s: Math.round(saturationPercent),
+    b: Math.round(brightnessPercent)
+  }
 }

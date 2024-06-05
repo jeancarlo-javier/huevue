@@ -31,14 +31,8 @@ describe('Color Validator', () => {
 
       validColors.forEach((color) => {
         const isValid = isRgbaValid(color)
-        // const [isValid, rgbaColor] = isRgbaValid(color)
 
         expect(isValid).toBe(true)
-        // expect(rgbaColor).toBeDefined()
-        // expect(rgbaColor.r).toBeDefined()
-        // expect(rgbaColor.g).toBeDefined()
-        // expect(rgbaColor.b).toBeDefined()
-        // expect(rgbaColor.a).toBeDefined()
       })
     })
 
@@ -70,14 +64,6 @@ describe('Color Validator', () => {
         console.log(color, isValid)
 
         expect(isValid).toBe(false)
-
-        // const [isValid, rgbaColor] = isRgbaValid(color)
-
-        // expect(rgbaColor).toBeDefined()
-        // expect(rgbaColor.r).toBeUndefined()
-        // expect(rgbaColor.g).toBeUndefined()
-        // expect(rgbaColor.b).toBeUndefined()
-        // expect(rgbaColor.a).toBeUndefined()
       })
     })
   })

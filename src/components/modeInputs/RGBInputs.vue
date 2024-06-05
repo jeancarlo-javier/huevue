@@ -53,7 +53,7 @@ watch(rgba, (newRgba) => {
 const setRed = (n) => {
   red.value = n
 
-  emit('setRgb', { r: n, g: green.value, b: blue.value, a: rgba.a })
+  emit('setRgb', { r: n, g: green.value, b: blue.value })
 
   updatingFromInput.value = true
 }
@@ -61,7 +61,7 @@ const setRed = (n) => {
 const setGreen = (n) => {
   green.value = n
 
-  emit('setRgb', { r: red.value, g: n, b: blue.value, a: rgba.a })
+  emit('setRgb', { r: red.value, g: n, b: blue.value })
 
   updatingFromInput.value = true
 }
@@ -69,7 +69,7 @@ const setGreen = (n) => {
 const setBlue = (n) => {
   blue.value = n
 
-  emit('setRgb', { r: red.value, g: green.value, b: n, a: rgba.a })
+  emit('setRgb', { r: red.value, g: green.value, b: n })
 
   updatingFromInput.value = true
 }
