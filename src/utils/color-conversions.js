@@ -1,4 +1,4 @@
-import { validateRgbaAndConvertToObject, validateHexColor } from './color-validators'
+import { isRgbaValid, isHexValid } from './color-validators'
 
 export function hsbToHsl (h, s, b) {
   const lightness = (2 - s / 100) * b / 2
@@ -92,7 +92,7 @@ export function hslToHex (h, s, l, a) {
 }
 
 export function hexToRgb (hexColor) {
-  if (!validateHexColor(hexColor)) {
+  if (!isHexValid(hexColor)) {
     throw new Error('Invalid hex color format')
   }
 
@@ -190,7 +190,7 @@ export function convertToHsl (value, colorType) {
     }
 
     if (colorType === 'rgb') {
-      const [isValid, rgbaColor] = validateRgbaAndConvertToObject(value)
+      const [isValid, rgbaColor] = isRgbaValid(value)
 
       if (isValid) {
         const hslColor = rgbToHsl(rgbaColor.r, rgbaColor.g, rgbaColor.b)
@@ -205,4 +205,33 @@ export function convertToHsl (value, colorType) {
     console.error(e.message)
     return { h: 0, s: 0, l: 0 }
   }
+}
+
+// New Functions
+/**
+ * Convert HSB (Hue, Saturation, Brightness) to RGB (Red, Green, Blue).
+ * @param {number} h - Hue value in the range [0, 360)
+ * @param {number} s - Saturation value in the range [0, 100]
+ * @param {number} b - Brightness value in the range [0, 100]
+ * @returns {Object} An object containing the RGB values {r, g, b} each in the range [0, 255]
+ */
+export function hsbToRgb (h, s, b) {
+  // Ensure the input values are within the expected ranges
+  if (h < 0 || h > 360) throw new RangeError('Hue (h) must be in the range [0, 360)')
+  if (s < 0 || s > 100) throw new RangeError('Saturation (s) must be in the range [0, 100]')
+  if (b < 0 || b > 100) throw new RangeError('Brightness (b) must be in the range [0, 100]')
+
+  // Convert saturation and brightness from percentages to the range [0, 1]
+  s /= 100
+  b /= 100
+
+  const k = (n) => (n + h / 60) % 6
+  const f = (n) => b * (1 - s * Math.max(0, Math.min(k(n), 4 - k(n), 1)))
+
+  // Calculate the RGB values
+  const r = Math.round(f(5) * 255)
+  const g = Math.round(f(3) * 255)
+  const bValue = Math.round(f(1) * 255)
+
+  return { r, g, b: bValue }
 }

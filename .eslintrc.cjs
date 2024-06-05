@@ -28,5 +28,15 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
+  },
+  globals: {
+    describe: true,
+    it: true,
+    expect: true,
+    beforeEach: true,
+    afterEach: true,
+    beforeAll: true,
+    afterAll: true,
+    vi: true
   }
 }

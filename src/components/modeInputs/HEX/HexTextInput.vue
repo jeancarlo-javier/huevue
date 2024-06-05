@@ -11,7 +11,7 @@
 
 <script setup>
 import { ref, toRefs, watch } from 'vue'
-import { validateHexColor } from '@/utils/color-validators.js'
+import { isHexValid } from '@/utils/color-validators.js'
 import suggestHexColor from '@/utils/suggestHexColor.js'
 
 const props = defineProps({
@@ -38,7 +38,7 @@ const setValue = (e) => {
   if (e.key === 'Enter') {
     e.preventDefault()
 
-    const isValid = validateHexColor(value)
+    const isValid = isHexValid(value)
 
     if (isValid) {
       lastValidValue.value = value
@@ -78,7 +78,7 @@ const selectInputText = (e) => {
 const unselectInputText = (e) => {
   userIsTyping.value = false
 
-  const isValid = validateHexColor(e.target.value)
+  const isValid = isHexValid(e.target.value)
 
   if (isValid) {
     emit('setValue', e.target.value)

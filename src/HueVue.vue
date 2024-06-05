@@ -39,7 +39,7 @@
   </label>
   <div :style="{ display: 'flex' }">
     <div>
-      <h2>RGBA</h2>
+      <h2>RGB</h2>
       <div>R: {{ rgb.r }}</div>
       <div><input v-model.number="rgb.r" type="range" min="0" max="255" /></div>
       <div>G: {{ rgb.g }}</div>
@@ -48,7 +48,7 @@
       <div><input v-model.number="rgb.b" type="range" min="0" max="255" /></div>
     </div>
     <div>
-      <h2>HSB</h2>
+      <h2>HSB: {{ hsb }}</h2>
       <div>H: {{ hsb.h }}</div>
       <div><input v-model.number="hsb.h" type="range" min="0" max="360" /></div>
       <div>S: {{ hsb.s }}</div>
@@ -69,8 +69,9 @@ import TransparencySlider from './components/TransparencySlider.vue'
 import ColorInput from './components/ColorInput.vue'
 import colorModes from './config/colorModes'
 import getColorType from './utils/color-types.js'
-import { hslToHex, hslToRgb } from './utils/color-conversions.js'
-import { validateRgbaAndConvertToObject } from './utils/color-validators.js'
+import { hsbToRgb } from './utils/color-conversions.js'
+import { isRgbaValid } from './utils/color-validators.js'
+import { rgbaStringToObject } from '@/utils/string-color-to-object.js'
 
 const props = defineProps({
   modes: {
@@ -85,39 +86,49 @@ const props = defineProps({
 
 const isOpen = ref(true)
 const HSLColor = ref(null)
-const hue = ref(0)
 const saturation = ref(0)
 const lightness = ref(0)
 const transparency = ref(100)
 const showTransparency = ref(true)
 
-const hsb = reactive({ h: 0, s: 0, b: 0 })
-const hsl = reactive({ h: 0, s: 0, l: 0 })
+const hue = ref(0)
+
+const hsb = reactive({ h: hue, s: 0, b: 0 })
+const hsl = reactive({ h: hue, s: 0, l: 0 })
 const rgb = reactive({ r: 0, g: 0, b: 0 })
 const hex = ref('')
 
-const defaultMode = ref(colorModes.find(m => m.id === 'rgb'))
+const currentMode = ref(colorModes.find(m => m.id === 'rgb'))
 
-const currentMode = ref(defaultMode)
+watch(hsb, (hsbCurrentValue) => {
+  if (currentMode.value.id === 'rgb') {
+    const { r, g, b } = hsbToRgb(hsbCurrentValue.h, hsbCurrentValue.s, hsbCurrentValue.b)
+
+    rgb.r = r
+    rgb.g = g
+    rgb.b = b
+  }
+}, { immediate: true })
 
 const setDefaultRgbaValue = (value) => {
-  const [isValid, rgbColor] = validateRgbaAndConvertToObject(value)
+  const isValid = isRgbaValid(value)
 
-  if (isValid) {
-    rgb.r = rgbColor.r
-    rgb.g = rgbColor.g
-    rgb.b = rgbColor.b
-  } else {
-    rgb.r = 0
-    rgb.g = 0
-    rgb.b = 0
-  }
+  if (!isValid) return
+
+  const rgbaObject = rgbaStringToObject(value)
+
+  rgb.r = rgbaObject.r
+  rgb.g = rgbaObject.g
+  rgb.b = rgbaObject.b
+  transparency.value = rgbaObject.a * 100
 }
 
 watch(() => props.value, (value) => {
   const colorType = getColorType(value)
 
-  if (defaultMode.value.id === 'rgb' && colorType === 'rgb') setDefaultRgbaValue(value)
+  if (currentMode.value.id === 'rgb' && colorType === 'rgb') {
+    setDefaultRgbaValue(value)
+  }
 }, { immediate: true, once: true })
 
 const setRgb = (rgbColor) => {
@@ -174,21 +185,10 @@ provide('rgba', rgb)
 provide('hsb', hsb)
 provide('hex', hex)
 
-watch([currentMode, hue, saturation, lightness, transparency, showTransparency], () => {
-  let hslColorContent = `${hue.value}deg ${saturation.value}% ${lightness.value}%`
-  if (showTransparency.value) {
-    hslColorContent = `${hslColorContent} / ${transparency.value}%`
-  }
-  HSLColor.value = `hsl(${hslColorContent})`
-
-  if (currentMode.value.id === 'hex') {
-    const hex = hslToHex(hue.value, saturation.value, lightness.value, showTransparency.value ? transparency.value : null)
-    document.body.style.background = hex
-  } else if (currentMode.value.id === 'hsl') {
-    document.body.style.background = HSLColor.value
-  } else if (currentMode.value.id === 'rgb') {
-    const { r, g, b } = hslToRgb(hue.value, saturation.value, lightness.value)
-    document.body.style.background = `rgb(${r}, ${g}, ${b}${showTransparency.value ? `, ${transparency.value / 100}` : ''})`
+// RGB Watcher
+watch([currentMode, rgb, transparency, showTransparency], () => {
+  if (currentMode.value.id === 'rgb') {
+    document.body.style.background = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b}${showTransparency.value ? `, ${transparency.value / 100}` : ''})`
   }
 }, { immediate: true })
 </script>
