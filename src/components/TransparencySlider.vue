@@ -2,7 +2,7 @@
   <div
     @mousedown="handlePositionAndStartDragging"
     ref="transparencySelector"
-    class="hue-slider"
+    class="transparency-slider"
     :style="{ background: backgroundGradient }"
   >
     <SliderThumb
@@ -26,12 +26,23 @@ const thumbChildRef = ref(null)
 
 const transparency = inject('transparency')
 
-const hue = inject('hue')
-const s = inject('saturation')
-const l = inject('lightness')
+const mode = inject('mode')
+
+const rgb = inject('rgb')
+const hex = inject('hex')
+const hsl = inject('hsl')
 
 const backgroundGradient = computed(() => {
-  return `linear-gradient(180deg, hsl(${hue.value}deg ${s.value}% ${l.value}%), transparent)`
+  let color
+  if (mode.value.id === 'hex') {
+    color = hex.value
+  } else if (mode.value.id === 'rgb') {
+    color = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
+  } else if (mode.value.id === 'hsl') {
+    color = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`
+  }
+
+  return `linear-gradient(180deg, ${color}, transparent)`
 })
 
 // Calcula la posición del slider a partir del valor hue.
@@ -192,7 +203,7 @@ onUpdated(() => {
 </script>
 
 <style scoped>
-.hue-slider {
+.transparency-slider {
   position: relative;
   width: 18px;
   height: 100%;
@@ -200,7 +211,7 @@ onUpdated(() => {
   border-radius: 9px;
 }
 
-.hue-slider::after {
+.transparency-slider::after {
   content: "";
   background-image: url(/src/assets/bg-transparency.svg);
   z-index: -1;

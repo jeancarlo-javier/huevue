@@ -29,7 +29,7 @@ const emit = defineEmits(['setRgb', 'setTransparency'])
 
 const showTransparency = inject('showTransparency')
 
-const rgba = inject('rgba')
+const rgb = inject('rgb')
 const transparency = inject('transparency')
 
 const red = ref()
@@ -38,9 +38,9 @@ const blue = ref()
 
 const updatingFromInput = ref(false)
 
-watch(rgba, (newRgba) => {
+watch(rgb, (newRgb) => {
   if (!updatingFromInput.value) {
-    const { r, g, b } = newRgba
+    const { r, g, b } = newRgb
 
     red.value = r
     green.value = g

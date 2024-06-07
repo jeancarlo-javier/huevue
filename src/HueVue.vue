@@ -39,6 +39,9 @@
   </label>
   <div :style="{ display: 'flex', flexDirection: 'column' }">
     <div>
+      <h2>HEX: {{ hex }}</h2>
+    </div>
+    <div>
       <h2>RGB: {{ rgb }}</h2>
       <div>R: {{ rgb.r }}</div>
       <div><input v-model.number="rgb.r" type="range" min="0" max="255" /></div>
@@ -69,9 +72,10 @@ import TransparencySlider from './components/TransparencySlider.vue'
 import ColorInput from './components/ColorInput.vue'
 import colorModes from './config/colorModes'
 import getColorType from './utils/color-types.js'
-import { hsbToRgb, rgbToHsb } from './utils/color-conversions.js'
-import { isRgbaValid } from './utils/color-validators.js'
+import { hsbToRgb, rgbToHsb, hsbToHex, hexToHsb } from './utils/color-conversions.js'
+import { isRgbaValid, isHexValid } from './utils/color-validators.js'
 import { rgbaStringToObject } from './utils/string-color-to-object.js'
+import { transparencyToHex } from './utils/add-transparency.js'
 
 const props = defineProps({
   modes: {
@@ -80,7 +84,7 @@ const props = defineProps({
   },
   value: {
     type: String,
-    default: () => 'rgb(255,0,100)'
+    default: () => '#7c8aa6'
   }
 })
 
@@ -93,23 +97,32 @@ const showTransparency = ref(true)
 
 const hue = ref(0)
 
+const finalColor = ref(null)
+
 const hsb = reactive({ h: hue, s: 0, b: 0 })
 const hsl = reactive({ h: hue, s: 0, l: 0 })
 const rgb = reactive({ r: 0, g: 0, b: 0 })
 const hex = ref('')
+const hexAlpha = ref('')
 
-const currentMode = ref(colorModes.find(m => m.id === 'rgb'))
+const currentMode = ref(colorModes.find(m => m.id === 'hex'))
 
 const updatingFromHueVue = ref(false)
 
-watch(hsb, (hsbCurrentValue) => {
+watch([hsb, transparency, showTransparency, currentMode], ([hsbCurrentValue, transparencyCurrentValue, showTransparencyCurrentValue, currentModeValue]) => {
   if (!updatingFromHueVue.value) {
-    if (currentMode.value.id === 'rgb') {
+    if (currentModeValue.id === 'rgb') {
       const { r, g, b } = hsbToRgb(hsbCurrentValue.h, hsbCurrentValue.s, hsbCurrentValue.b)
 
       rgb.r = r
       rgb.g = g
       rgb.b = b
+    }
+
+    if (currentModeValue.id === 'hex') {
+      const hexColor = hsbToHex(hsbCurrentValue.h, hsbCurrentValue.s, hsbCurrentValue.b)
+
+      hex.value = hexColor
     }
   }
 
@@ -136,6 +149,20 @@ const setDefaultRgbaValue = (value) => {
 
   updatingFromHueVue.value = true
   const newHsbColor = rgbToHsb(rgb.r, rgb.g, rgb.b)
+
+  setHsb(newHsbColor)
+}
+
+const setDefaultHexValue = (value) => {
+  const isValid = isHexValid(value)
+
+  if (!isValid) return
+
+  hex.value = value
+
+  updatingFromHueVue.value = true
+  const newHsbColor = hexToHsb(hex.value)
+
   setHsb(newHsbColor)
 }
 
@@ -143,8 +170,13 @@ const setDefaultRgbaValue = (value) => {
 watch(() => props.value, (value) => {
   const colorType = getColorType(value)
 
-  if (currentMode.value.id === 'rgb' && colorType === 'rgb') {
-    setDefaultRgbaValue(value)
+  switch (colorType) {
+    case 'hex':
+      setDefaultHexValue(value)
+      break
+    case 'rgb':
+      setDefaultRgbaValue(value)
+      break
   }
 }, { immediate: true, once: true })
 
@@ -160,6 +192,10 @@ const setRgb = (rgbColor) => {
 
 const setHex = (hexColor) => {
   hex.value = hexColor
+
+  updatingFromHueVue.value = true
+  const newHsbColor = hexToHsb(hex.value)
+  setHsb(newHsbColor)
 }
 
 const handleOpen = () => {
@@ -196,14 +232,33 @@ provide('lightness', lightness)
 provide('transparency', transparency)
 provide('mode', currentMode)
 
-provide('rgba', rgb)
+provide('rgb', rgb)
 provide('hsb', hsb)
 provide('hex', hex)
+provide('hsl', hsl)
+
+provide('finalColor', finalColor)
 
 // RGB Watcher
 watch([currentMode, rgb, transparency, showTransparency], () => {
   if (currentMode.value.id === 'rgb') {
     document.body.style.background = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b}${showTransparency.value ? `, ${transparency.value / 100}` : ''})`
+
+    // finalColor.value = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b}${showTransparency.value ? `, ${transparency.value / 100}` : ''})`
+  }
+}, { immediate: true })
+
+// Hex Watcher
+watch([currentMode, hex, transparency, showTransparency], () => {
+  if (currentMode.value.id === 'hex') {
+    let hexColor = hex.value
+
+    if (showTransparency.value && transparency.value !== 100) {
+      const hexTransparency = transparencyToHex(transparency.value / 100)
+      hexColor = `${hexColor}${hexTransparency}`
+    }
+
+    document.body.style.background = hexColor
   }
 }, { immediate: true })
 </script>

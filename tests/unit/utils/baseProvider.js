@@ -8,7 +8,7 @@ const baseProvider = ({
   lightness = 50,
   transparency = 50,
   mode = colorModes[0],
-  rgba = { r: 255, g: 0, b: 0 }
+  rgb = { r: 255, g: 0, b: 0 }
 } = {}) => ({
   showTransparency: ref(showTransparency),
   hue: ref(hue),
@@ -16,7 +16,7 @@ const baseProvider = ({
   lightness: ref(lightness),
   transparency: ref(transparency),
   mode: ref(mode),
-  rgba: reactive(rgba)
+  rgb: reactive(rgb)
 })
 
 export default baseProvider

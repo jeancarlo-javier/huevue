@@ -1,8 +1,25 @@
+/**
+ * Validates a hexadecimal color string.
+ * @param {string} hexColor
+ * @returns {boolean}
+ */
 export function isHexValid (hexColor) {
-  // Expresión regular que valida colores hexadecimales de 6 o 8 dígitos con o sin '#'
-  const regex = /^#?([a-fA-F0-9]{6}([a-fA-F0-9]{2})?)$/
+  // Verify that the string starts with #
+  if (!hexColor.startsWith('#')) {
+    return false
+  }
 
-  return regex.test(hexColor)
+  // Remove the # symbol
+  hexColor = hexColor.slice(1)
+
+  // Verify that the string has a length of 6 characters
+  if (hexColor.length !== 6) {
+    return false
+  }
+
+  // Verify that all characters are valid in Hexadecimal
+  const hexPattern = /^[0-9A-Fa-f]{6}$/
+  return hexPattern.test(hexColor)
 }
 
 /**

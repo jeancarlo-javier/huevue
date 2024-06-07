@@ -12,7 +12,7 @@
 <script setup>
 import { ref, toRefs, watch } from 'vue'
 import { isHexValid } from '@/utils/color-validators.js'
-import suggestHexColor from '@/utils/suggestHexColor.js'
+import suggestHexColor from '@/utils/suggest-hex-color.js'
 
 const props = defineProps({
   inputValue: {

@@ -427,9 +427,9 @@ describe('ColorModeInputs', () => {
         }
       })
 
-      const { rgba, transparency } = wrapper.vm
+      const { rgb, transparency } = wrapper.vm
 
-      expect(rgba).toBeDefined()
+      expect(rgb).toBeDefined()
       expect(transparency).toBeDefined()
     })
 
@@ -443,19 +443,19 @@ describe('ColorModeInputs', () => {
           provide: provider
         }
       })
-      expect(wrapper.vm.rgba.r).toBe(255)
-      expect(wrapper.vm.rgba.g).toBe(0)
-      expect(wrapper.vm.rgba.b).toBe(0)
+      expect(wrapper.vm.rgb.r).toBe(255)
+      expect(wrapper.vm.rgb.g).toBe(0)
+      expect(wrapper.vm.rgb.b).toBe(0)
 
-      provider.rgba.r = 255
-      provider.rgba.g = 255
-      provider.rgba.b = 255
+      provider.rgb.r = 255
+      provider.rgb.g = 255
+      provider.rgb.b = 255
 
       await wrapper.vm.$nextTick()
 
-      expect(wrapper.vm.rgba.r).toBe(255)
-      expect(wrapper.vm.rgba.g).toBe(255)
-      expect(wrapper.vm.rgba.b).toBe(255)
+      expect(wrapper.vm.rgb.r).toBe(255)
+      expect(wrapper.vm.rgb.g).toBe(255)
+      expect(wrapper.vm.rgb.b).toBe(255)
     })
 
     it('should emit the setRgba event if some RGB inputs are changed', () => {

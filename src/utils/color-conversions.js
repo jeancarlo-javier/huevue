@@ -1,4 +1,4 @@
-import { isRgbaValid, isHexValid } from './color-validators'
+import { isRgbaValid } from './color-validators'
 
 export function hsbToHsl (h, s, b) {
   const lightness = (2 - s / 100) * b / 2
@@ -89,28 +89,6 @@ export function hslToHex (h, s, l, a) {
   }
 
   return hex.toUpperCase()
-}
-
-export function hexToRgb (hexColor) {
-  if (!isHexValid(hexColor)) {
-    throw new Error('Invalid hex color format')
-  }
-
-  // Remove the hash at the start if it's there
-  hexColor = hexColor.replace(/^#/, '')
-
-  // If it's a shorthand hex color, convert to full form
-  if (hexColor.length === 3) {
-    hexColor = hexColor.split('').map(char => char + char).join('')
-  }
-
-  // Parse the r, g, b values
-  const bigint = parseInt(hexColor, 16)
-  const r = (bigint >> 16) & 255
-  const g = (bigint >> 8) & 255
-  const b = bigint & 255
-
-  return { r, g, b }
 }
 
 export function hexToHsl (hexColor) {
@@ -237,6 +215,36 @@ export function hsbToRgb (h, s, b) {
 }
 
 /**
+ * Converts an HSB (Hue, Saturation, Brightness) color to its hexadecimal representation.
+ * @param {number} h - The hue of the color, in the range [0, 360).
+ * @param {number} s - The saturation of the color, in the range [0, 100].
+ * @param {number} b - The brightness of the color, in the range [0, 100].
+ * @returns {string} The hexadecimal representation of the color.
+ */
+export function hsbToHex (h, s, b) {
+  // Ensure h, s, and b are in the expected ranges
+  h = Math.max(0, Math.min(360, h))
+  s = Math.max(0, Math.min(100, s))
+  b = Math.max(0, Math.min(100, b))
+
+  // Convert saturation and brightness to percentages
+  s /= 100
+  b /= 100
+
+  const k = (n) => (n + h / 60) % 6
+  const f = (n) => b * (1 - s * Math.max(0, Math.min(k(n), 4 - k(n), 1)))
+
+  const r = Math.round(255 * f(5))
+  const g = Math.round(255 * f(3))
+  const b_ = Math.round(255 * f(1))
+
+  // Convert RGB values to hexadecimal and pad with zeroes if necessary
+  const toHex = (x) => x.toString(16).padStart(2, '0')
+
+  return `#${toHex(r)}${toHex(g)}${toHex(b_)}`
+}
+
+/**
  * Converts an RGB color value to HSB.
  * Assumes r, g, and b are contained in the set [0, 255] and
  * returns h in the range [0, 360], s and b in the range [0, 100].
@@ -288,5 +296,73 @@ export function rgbToHsb (r, g, b) {
     h: Math.round(hue),
     s: Math.round(saturationPercent),
     b: Math.round(brightnessPercent)
+  }
+}
+/**
+ * Converts a hex color code to RGB format.
+ *
+ * @param {string} hexColor - The hex color code (e.g., "#FF5733").
+ * @returns {object} An object with r, g, and b properties representing the RGB values.
+ */
+
+export function hexToRgb (hexColor) {
+  // Remove the hash at the start if it's there
+  hexColor = hexColor.replace(/^#/, '')
+
+  // If it's a shorthand hex color, convert to full form
+  if (hexColor.length === 3) {
+    hexColor = hexColor.split('').map(char => char + char).join('')
+  }
+
+  // Parse the r, g, b values
+  const bigint = parseInt(hexColor, 16)
+  const r = (bigint >> 16) & 255
+  const g = (bigint >> 8) & 255
+  const b = bigint & 255
+
+  return { r, g, b }
+}
+
+/**
+ * Converts a hex color code to HSB (Hue, Saturation, Brightness) format.
+ *
+ * @param {string} hexColor - The hex color code (e.g., "#FF5733").
+ * @returns {object} An object with h, s, and b properties representing the HSB values.
+ */
+export function hexToHsb (hexColor) {
+  const { r, g, b } = hexToRgb(hexColor)
+
+  // Convert RGB values to the range of 0-1
+  const rNorm = r / 255
+  const gNorm = g / 255
+  const bNorm = b / 255
+
+  // Find the maximum and minimum RGB values
+  const max = Math.max(rNorm, gNorm, bNorm)
+  const min = Math.min(rNorm, gNorm, bNorm)
+
+  // Calculate Brightness
+  const brightness = max
+
+  // Calculate Saturation
+  const saturation = max === 0 ? 0 : (max - min) / max
+
+  // Calculate Hue
+  let hue
+  if (max === min) {
+    hue = 0 // No color
+  } else if (max === rNorm) {
+    hue = (gNorm - bNorm) / (max - min) + (gNorm < bNorm ? 6 : 0)
+  } else if (max === gNorm) {
+    hue = (bNorm - rNorm) / (max - min) + 2
+  } else {
+    hue = (rNorm - gNorm) / (max - min) + 4
+  }
+  hue = Math.round(hue * 60)
+
+  return {
+    h: hue,
+    s: Math.round(saturation * 100),
+    b: Math.round(brightness * 100)
   }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isRgbaValid } from '@/utils/color-validators.js'
+import { isRgbaValid, isHexValid } from '@/utils/color-validators.js'
 
 describe('Color Validator', () => {
   describe('isRgbaValid', () => {
@@ -61,7 +61,70 @@ describe('Color Validator', () => {
 
       invalidColors.forEach((color) => {
         const isValid = isRgbaValid(color)
-        console.log(color, isValid)
+
+        expect(isValid).toBe(false)
+      })
+    })
+  })
+
+  describe('isHexValid', () => {
+    it('returns true if hex color is valid', () => {
+      const validHexColors = [
+        '#FF5733', // Red-Orange
+        '#33FF57', // Green
+        '#3357FF', // Blue
+        '#FF33A1', // Pink
+        '#33FFF5', // Aqua
+        '#F5FF33', // Yellow
+        '#FF5733', // Coral
+        '#5733FF', // Violet
+        '#33FF83', // Light Green
+        '#FF3380', // Deep Pink
+        '#33FFAC', // Spring Green
+        '#3380FF', // Sky Blue
+        '#FFA733', // Orange
+        '#A733FF', // Purple
+        '#FF33C1', // Magenta
+        '#33FFC1', // Turquoise
+        '#FFC133', // Gold
+        '#C133FF', // Plum
+        '#FF33E0', // Fuchsia
+        '#33FFE0' // Aquamarine
+      ]
+
+      validHexColors.forEach((color) => {
+        const isValid = isHexValid(color)
+
+        expect(isValid).toBe(true)
+      })
+    })
+
+    it('returns false for invalid hex colors', () => {
+      const invalidHexColors = [
+        '#GG5733', // Invalid Hex character
+        '#33FF5Z', // Invalid Hex character
+        '#3357FG', // Invalid Hex character
+        'FF33A1', // Missing #
+        '#33FF', // Incomplete Hex code
+        '#FF57339', // Too many characters
+        '#F5FF33G', // Invalid Hex character
+        '5733FF', // Missing #
+        '#33FG83', // Invalid Hex character
+        '#FF338', // Incomplete Hex code
+        '#33FFFG', // Invalid Hex character
+        '#3380FFG', // Too many characters
+        '#FFA7G3', // Invalid Hex character
+        'A733FF', // Missing #
+        '#FF33', // Incomplete Hex code
+        '#33FFC1G', // Too many characters
+        '#FF33E', // Incomplete Hex code
+        '33FFE0', // Missing #
+        '#33FFZ0', // Invalid Hex character
+        '#FF573' // Incomplete Hex code
+      ]
+
+      invalidHexColors.forEach((color) => {
+        const isValid = isHexValid(color)
 
         expect(isValid).toBe(false)
       })

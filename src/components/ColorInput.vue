@@ -14,10 +14,7 @@
       />
       <HEXInputs
         v-if="mode.id ==='hex'"
-        @setHue="setHue"
-        @setSaturation="setSaturation"
-        @setLightness="setLightness"
-        @setTransparency="setTransparency"
+        @setHex="(hex) => emit('setHex', hex)"
       />
       <RGBInputs
         v-if="mode.id ==='rgb'"
