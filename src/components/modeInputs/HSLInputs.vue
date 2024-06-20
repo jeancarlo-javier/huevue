@@ -1,21 +1,21 @@
 <template>
   <div>
     <NumberInput
-      @setValue="(n) => setValue(n, 'setHue')"
+      @setValue="setHue"
       :min="0" :max="360"
-      :inputValue="hue" />
+      :inputValue="hsl.h" />
     <NumberInput
-      @setValue="(n) => setValue(n, 'setSaturation')"
+      @setValue="setSaturation"
       :min="0" :max="100"
-      :inputValue="saturation" />
+      :inputValue="hsl.s" />
     <NumberInput
-      @setValue="(n) => setValue(n, 'setLightness')"
+      @setValue="setLightness"
       :min="0" :max="100"
-      :inputValue="lightness" />
+      :inputValue="hsl.l" />
     <NumberInput
       v-if="showTransparency"
       :percent="true"
-      @setValue="(n) => setValue(n, 'setTransparency')"
+      @setValue="setTransparency"
       :min="0" :max="100"
       :inputValue="transparency" />
   </div>
@@ -29,13 +29,27 @@ const emit = defineEmits(['setHue', 'setSaturation', 'setLightness', 'setTranspa
 
 const showTransparency = inject('showTransparency')
 
-const hue = inject('hue')
-const saturation = inject('saturation')
-const lightness = inject('lightness')
+const hsl = inject('hsl')
 const transparency = inject('transparency')
 
 const setValue = (n, action) => {
   emit(action, n)
+}
+
+const setHue = (hslColor) => {
+  emit('setHsl', { h: hslColor, s: hsl.s, l: hsl.l })
+}
+
+const setSaturation = (hslColor) => {
+  emit('setHsl', { h: hsl.h, s: hslColor, l: hsl.l })
+}
+
+const setLightness = (hslColor) => {
+  emit('setHsl', { h: hsl.h, s: hsl.s, l: hslColor })
+}
+
+const setTransparency = (transparency) => {
+  emit('setTransparency', transparency)
 }
 </script>
 

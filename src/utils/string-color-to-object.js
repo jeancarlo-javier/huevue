@@ -1,13 +1,12 @@
+import { rgbRegex, hslRegex, hslPatternSpaceSeparated, hslaPattern } from './regexColors.js'
+
 /**
  * Convert RGBA color string To Object
  * @param {String} color - Rgba String Color
  * @returns {Object}
  */
 export function rgbaStringToObject (color) {
-  // Combined regular expression for RGB, RGBA, and RGB percentage formats
-  const combinedRegex = /^rgba?\(\s*(\d{1,3})\s*(?:,\s*|\s+)(\d{1,3})\s*(?:,\s*|\s+)(\d{1,3})(?:\s*\/\s*([\d.]+%?)|\s*,\s*([\d.]+%?))?\s*\)$/
-
-  const match = color.match(combinedRegex)
+  const match = color.match(rgbRegex)
 
   if (!match) {
     return null
@@ -39,6 +38,36 @@ export function rgbaStringToObject (color) {
   if (result.a > 1) {
     return null
   }
+
+  return result
+}
+
+/**
+ * Converts an HSL or HSLA string to an object with hue, saturation, lightness, and optional alpha properties.
+ * @param {string} hslColor - The HSL or HSLA string to convert.
+ * @returns {Object|null} An object with hue, saturation, lightness, and optional alpha properties, or null if the input is invalid.
+ */
+export function hslStringToObject (hslColor) {
+  const match = hslColor.match(hslRegex) || hslColor.match(hslPatternSpaceSeparated) || hslColor.match(hslaPattern)
+
+  if (!match) return null
+
+  const h = parseInt(match[1])
+  const s = parseInt(match[3])
+  const l = parseInt(match[4])
+  // const a = match[5] ? parseFloat(match[5]) : undefined
+
+  // Normalize hue to be between 0 and 360, where 360 is considered as 0
+  // h = h % 360
+  if (h < 0 || h > 360) return null
+
+  // Check if saturation and lightness are between 0 and 100
+  if (s < 0 || s > 100 || l < 0 || l > 100) return null
+
+  const result = { h, s, l }
+  // if (a !== undefined) {
+  //   result.a = a
+  // }
 
   return result
 }

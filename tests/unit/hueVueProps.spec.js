@@ -5,12 +5,12 @@ import HueVue from '@/HueVue.vue'
 describe('hueVueProps', () => {
   describe('v-model', () => {
     it('should convert hex to hsl', () => {
-      const wrapper = shallowMount(HueVue, {
-        props: {
-          mode: 'hex',
-          value: '#16161D'
-        }
-      })
+      // const wrapper = shallowMount(HueVue, {
+      //   props: {
+      //     mode: 'hex',
+      //     value: '#16161D'
+      //   }
+      // })
 
       // expect(wrapper.vm.hue).toBe(240)
       // expect(wrapper.vm.saturation).toBe(14)

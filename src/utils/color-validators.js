@@ -1,3 +1,5 @@
+import { rgbRegex, hslRegex, hslPatternSpaceSeparated, hslaPattern } from './regexColors.js'
+
 /**
  * Validates a hexadecimal color string.
  * @param {string} hexColor
@@ -24,18 +26,39 @@ export function isHexValid (hexColor) {
 
 /**
  * Validate an RGBA color string
- * @param {String} color - Rgba String Color
+ * @param {String} rgbaColor - Rgba String Color
  * @returns {Boolean}
  */
-export function isRgbaValid (color) {
-  // Regular expressions for RGB and RGBA formats
-  const rgbRegex = /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/
-  const rgbaRegex = /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0?\.\d+)\s*\)$/
-  const rgbPercentRegex = /^rgb\(\s*(\d{1,3})\s*(\s)\s*(\d{1,3})\s*(\s)\s*(\d{1,3})\s*\/\s*([\d.]+)%\s*\)$/
-
-  if (rgbRegex.test(color) || rgbaRegex.test(color) || rgbPercentRegex.test(color)) {
+export function isRgbaValid (rgbaColor) {
+  if (rgbRegex.test(rgbaColor)) {
     return true
   }
 
   return false
+}
+
+/**
+ * Validates if the given HSL or HSLA color string is valid.
+ * @param {string} hslColor - The HSL or HSLA color string in the format "hsl(H, S%, L%)" or "hsla(H, S%, L%, A)".
+ * @returns {boolean} - Returns true if the HSL or HSLA color is valid, false otherwise.
+ */
+export function isHslValid (hslColor) {
+  const match = hslColor.match(hslRegex) || hslColor.match(hslPatternSpaceSeparated) || hslColor.match(hslaPattern)
+
+  if (!match) return false
+
+  const hue = parseInt(match[1])
+  const saturation = parseInt(match[3])
+  const lightness = parseInt(match[4])
+
+  if (hue < 0 || hue > 360) return false
+  if (saturation < 0 || saturation > 100) return false
+  if (lightness < 0 || lightness > 100) return false
+
+  if (match[5]) {
+    const alpha = parseFloat(match[5])
+    if (alpha < 0 || alpha > 1) return false
+  }
+
+  return true
 }
