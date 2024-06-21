@@ -16,11 +16,7 @@
       />
     </template>
     <template v-slot:pallete>
-      <PalleteSelector
-        @setLightness="setLightness"
-        @setSaturation="setSaturation"
-        @setHsb="setHsb"
-      />
+      <PalleteSelector @setLightness="setLightness" @setSaturation="setSaturation" @setHsb="setHsb" />
     </template>
     <template v-slot:hueSlider>
       <HueSlider @setHue="setHue" />
@@ -35,44 +31,101 @@
   </div>
   <label>
     Show Transparency
-    <input v-model="showTransparency" type="checkbox" />
+    <input v-model="store.showTransparency.value" type="checkbox" />
   </label>
   <div :style="{ display: 'flex', flexDirection: 'column' }">
     <div>
-      <h2>HSL: {{ hsl }}</h2>
-      <div>H: {{ hsl.h }}</div>
-      <div><input v-model.number="hsl.h" type="range" min="0" max="360" /></div>
-      <div>S: {{ hsl.s }}</div>
-      <div><input v-model.number="hsl.s" type="range" min="0" max="100" /></div>
-      <div>L: {{ hsl.l }}</div>
-      <div><input v-model.number="hsl.l" type="range" min="0" max="100" /></div>
+      <h2>
+        HSL:
+        {{ store.hsl }}
+      </h2>
+      <div>
+        H:
+        {{ store.hsl.h }}
+      </div>
+      <div>
+        <input v-model.number="store.hsl.h" type="range" min="0" max="360" />
+      </div>
+      <div>
+        S:
+        {{ store.hsl.s }}
+      </div>
+      <div>
+        <input v-model.number="store.hsl.s" type="range" min="0" max="100" />
+      </div>
+      <div>
+        L:
+        {{ store.hsl.l }}
+      </div>
+      <div>
+        <input v-model.number="store.hsl.l" type="range" min="0" max="100" />
+      </div>
     </div>
     <div>
-      <h2>HEX: {{ hex }}</h2>
+      <h2>
+        HEX:
+        {{ store.hex }}
+      </h2>
     </div>
     <div>
-      <h2>RGB: {{ rgb }}</h2>
-      <div>R: {{ rgb.r }}</div>
-      <div><input v-model.number="rgb.r" type="range" min="0" max="255" /></div>
-      <div>G: {{ rgb.g }}</div>
-      <div><input v-model.number="rgb.g" type="range" min="0" max="255" /></div>
-      <div>B: {{ rgb.b }}</div>
-      <div><input v-model.number="rgb.b" type="range" min="0" max="255" /></div>
+      <h2>
+        RGB:
+        {{ store.rgb }}
+      </h2>
+      <div>
+        R:
+        {{ store.rgb.r }}
+      </div>
+      <div>
+        <input v-model.number="store.rgb.r" type="range" min="0" max="255" />
+      </div>
+      <div>
+        G:
+        {{ store.rgb.g }}
+      </div>
+      <div>
+        <input v-model.number="store.rgb.g" type="range" min="0" max="255" />
+      </div>
+      <div>
+        B:
+        {{ store.rgb.b }}
+      </div>
+      <div>
+        <input v-model.number="store.rgb.b" type="range" min="0" max="255" />
+      </div>
     </div>
     <div>
-      <h2>HSB: {{ hsb }}</h2>
-      <div>H: {{ hsb.h }}</div>
-      <div><input v-model.number="hsb.h" type="range" min="0" max="360" /></div>
-      <div>S: {{ hsb.s }}</div>
-      <div><input v-model.number="hsb.s" type="range" min="0" max="100" /></div>
-      <div>B: {{ hsb.b }}</div>
-      <div><input v-model.number="hsb.b" type="range" min="0" max="100" /></div>
+      <h2>
+        HSB:
+        {{ store.hsb }}
+      </h2>
+      <div>
+        H:
+        {{ store.hsb.h }}
+      </div>
+      <div>
+        <input v-model.number="store.hsb.h" type="range" min="0" max="360" />
+      </div>
+      <div>
+        S:
+        {{ store.hsb.s }}
+      </div>
+      <div>
+        <input v-model.number="store.hsb.s" type="range" min="0" max="100" />
+      </div>
+      <div>
+        B:
+        {{ store.hsb.b }}
+      </div>
+      <div>
+        <input v-model.number="store.hsb.b" type="range" min="0" max="100" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, provide, watch } from 'vue'
+import { watch } from 'vue'
 import AppLayout from './components/AppLayout.vue'
 import ColorDisplay from './components/ColorDisplay.vue'
 import PalleteSelector from './components/PalleteSelector.vue'
@@ -81,23 +134,10 @@ import TransparencySlider from './components/TransparencySlider.vue'
 import ColorInput from './components/ColorInput.vue'
 import colorModes from './config/colorModes'
 import getColorType from './utils/color-types.js'
-import {
-  hsbToRgb,
-  rgbToHsb,
-  hsbToHex,
-  hexToHsb,
-  hsbToHsl
-} from './utils/color-conversions.js'
-import {
-  isRgbaValid,
-  isHexValid,
-  isHslValid
-} from './utils/color-validators.js'
-import {
-  rgbaStringToObject,
-  hslStringToObject
-} from './utils/string-color-to-object.js'
+import { hsbToRgb, hsbToHex } from './utils/color-conversions.js'
 import { transparencyToHex } from './utils/add-transparency.js'
+import useColorStore from './store/colorStore'
+import useColorManipulation from './composables/useColorManipulation.js'
 
 const props = defineProps({
   modes: {
@@ -110,117 +150,51 @@ const props = defineProps({
   }
 })
 
-const isOpen = ref(true)
-const HSLColor = ref(null)
-const saturation = ref(0)
-const lightness = ref(0)
-const transparency = ref(100)
-const showTransparency = ref(true)
-
-const hue = ref(0)
-
-const finalColor = ref(null)
-
-const hsb = reactive({ h: hue, s: 0, b: 0 })
-const hsl = reactive({ h: hue, s: 0, l: 0 })
-const rgb = reactive({ r: 0, g: 0, b: 0 })
-const hex = ref('')
-const hexAlpha = ref('')
-
-const currentMode = ref(colorModes.find((m) => m.id === 'hsl'))
-
-const updatingFromHueVue = ref(false)
+const store = useColorStore()
+const {
+  setHue,
+  setRgb,
+  setHex,
+  setHsl,
+  setHsb,
+  setDefaultRgbaValue,
+  setDefaultHexValue,
+  setDefaultHslValue,
+  setTransparency,
+  setMode,
+  handleOpen
+} = useColorManipulation(store)
 
 watch(
-  [hsb, transparency, showTransparency, currentMode],
-  ([
-    hsbCurrentValue,
-    transparencyCurrentValue,
-    showTransparencyCurrentValue,
-    currentModeValue
-  ]) => {
-    if (!updatingFromHueVue.value) {
+  [store.hsb, store.currentMode],
+  ([hsbCurrentValue, currentModeValue]) => {
+    if (!store.updatingFromHueVue.value) {
       if (currentModeValue.id === 'rgb') {
-        const { r, g, b } = hsbToRgb(
-          hsbCurrentValue.h,
-          hsbCurrentValue.s,
-          hsbCurrentValue.b
-        )
+        const { r, g, b } = hsbToRgb(hsbCurrentValue.h, hsbCurrentValue.s, hsbCurrentValue.b)
 
-        rgb.r = r
-        rgb.g = g
-        rgb.b = b
+        store.rgb.r = r
+        store.rgb.g = g
+        store.rgb.b = b
       }
 
       if (currentModeValue.id === 'hex') {
-        const hexColor = hsbToHex(
-          hsbCurrentValue.h,
-          hsbCurrentValue.s,
-          hsbCurrentValue.b
-        )
+        const hexColor = hsbToHex(hsbCurrentValue.h, hsbCurrentValue.s, hsbCurrentValue.b)
 
-        hex.value = hexColor
+        store.hex.value = hexColor
       }
     }
 
-    updatingFromHueVue.value = false
+    store.updatingFromHueVue.value = false
   },
-  { immediate: true }
+  {
+    immediate: true
+  }
 )
 
-const setHsb = (hsbColor) => {
-  hsb.h = hsbColor.h
-  hsb.s = hsbColor.s
-  hsb.b = hsbColor.b
-}
-
-const setDefaultRgbaValue = (value) => {
-  const isValid = isRgbaValid(value)
-
-  if (!isValid) return
-
-  const rgbaObject = rgbaStringToObject(value)
-
-  rgb.r = rgbaObject.r
-  rgb.g = rgbaObject.g
-  rgb.b = rgbaObject.b
-  transparency.value = rgbaObject.a * 100
-
-  updatingFromHueVue.value = true
-  const newHsbColor = rgbToHsb(rgb.r, rgb.g, rgb.b)
-
-  setHsb(newHsbColor)
-}
-
-const setDefaultHexValue = (value) => {
-  const isValid = isHexValid(value)
-
-  if (!isValid) return
-
-  hex.value = value
-
-  updatingFromHueVue.value = true
-  const newHsbColor = hexToHsb(hex.value)
-
-  setHsb(newHsbColor)
-}
-
-const setDefaultHslValue = (value) => {
-  const isValid = isHslValid(value)
-  console.log('isValid', isValid)
-
-  if (!isValid) return
-
-  const hslObject = hslStringToObject(value)
-  console.log(hslObject)
-}
-
-// Set the default color value
 watch(
   () => props.value,
   (value) => {
     const colorType = getColorType(value)
-    console.log(value, colorType)
 
     switch (colorType) {
       case 'hex':
@@ -234,109 +208,47 @@ watch(
         break
     }
   },
-  { immediate: true, once: true }
+  {
+    immediate: true,
+    once: true
+  }
 )
-
-const setRgb = (rgbColor) => {
-  rgb.r = rgbColor.r
-  rgb.g = rgbColor.g
-  rgb.b = rgbColor.b
-
-  updatingFromHueVue.value = true
-  const newHsbColor = rgbToHsb(rgb.r, rgb.g, rgb.b)
-  setHsb(newHsbColor)
-}
-
-const setHex = (hexColor) => {
-  hex.value = hexColor
-
-  updatingFromHueVue.value = true
-  const newHsbColor = hexToHsb(hex.value)
-  setHsb(newHsbColor)
-}
-
-const setHsl = (hslColor) => {
-  hsl.h = hslColor.h
-  hsl.s = hslColor.s
-  hsl.l = hslColor.l
-
-  updatingFromHueVue.value = true
-  // const newHsbColor = hslToHsb(hsl.h, hsl.s, hsl.l)
-  // setHsb(newHsbColor)
-}
-
-const handleOpen = () => {
-  isOpen.value = !isOpen.value
-}
-
-const setHue = (value) => {
-  hue.value = value
-  console.log(value)
-}
-
-const setSaturation = (value) => {
-  saturation.value = value
-}
-
-const setLightness = (value) => {
-  lightness.value = value
-}
-
-const setTransparency = (value) => {
-  transparency.value = value
-}
-
-const setMode = (modeId) => {
-  currentMode.value = colorModes.find((m) => m.id === modeId)
-}
-
-provide('isOpen', isOpen)
-provide('showTransparency', showTransparency)
-provide('HSLColor', HSLColor)
-provide('hue', hue)
-provide('saturation', saturation)
-provide('lightness', lightness)
-provide('transparency', transparency)
-provide('mode', currentMode)
-
-provide('rgb', rgb)
-provide('hsb', hsb)
-provide('hex', hex)
-provide('hsl', hsl)
-
-provide('finalColor', finalColor)
 
 // RGB Watcher
 watch(
-  [currentMode, rgb, transparency, showTransparency],
+  [store.currentMode, store.rgb, store.transparency, store.showTransparency],
   () => {
-    if (currentMode.value.id === 'rgb') {
-      document.body.style.background = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b}${
-        showTransparency.value ? `, ${transparency.value / 100}` : ''
+    if (store.currentMode.value.id === 'rgb') {
+      document.body.style.background = `rgb(${store.rgb.r}, ${store.rgb.g}, ${store.rgb.b}${
+        store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
       })`
 
       // finalColor.value = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b}${showTransparency.value ? `, ${transparency.value / 100}` : ''})`
     }
   },
-  { immediate: true }
+  {
+    immediate: true
+  }
 )
 
 // Hex Watcher
 watch(
-  [currentMode, hex, transparency, showTransparency],
+  [store.currentMode, store.hex, store.transparency, store.showTransparency],
   () => {
-    if (currentMode.value.id === 'hex') {
-      let hexColor = hex.value
+    if (store.currentMode.value.id === 'hex') {
+      let hexColor = store.hex.value
 
-      if (showTransparency.value && transparency.value !== 100) {
-        const hexTransparency = transparencyToHex(transparency.value / 100)
+      if (store.showTransparency.value && store.transparency.value !== 100) {
+        const hexTransparency = transparencyToHex(store.transparency.value / 100)
         hexColor = `${hexColor}${hexTransparency}`
       }
 
       document.body.style.background = hexColor
     }
   },
-  { immediate: true }
+  {
+    immediate: true
+  }
 )
 </script>
 
