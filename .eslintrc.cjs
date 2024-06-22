@@ -1,23 +1,18 @@
+import { b } from 'vitest/dist/suite-IbNSsUWN.js'
+
 module.exports = {
   env: {
     browser: true,
     es2021: true
   },
-  plugins: [
-    'vue'
-  ],
-  extends: [
-    'standard',
-    'plugin:vue/vue3-essential'
-  ],
+  plugins: ['vue'],
+  extends: ['standard', 'plugin:vue/vue3-essential'],
   overrides: [
     {
       env: {
         node: true
       },
-      files: [
-        '.eslintrc.{js,cjs}'
-      ],
+      files: ['.eslintrc.{js,cjs}'],
       parserOptions: {
         sourceType: 'script'
       }
@@ -28,6 +23,7 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
+    'space-before-function-paren': 'off'
   },
   globals: {
     describe: true,

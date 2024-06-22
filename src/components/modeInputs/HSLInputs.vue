@@ -1,23 +1,16 @@
 <template>
   <div>
-    <NumberInput
-      @setValue="setHue"
-      :min="0" :max="360"
-      :inputValue="hsl.h" />
-    <NumberInput
-      @setValue="setSaturation"
-      :min="0" :max="100"
-      :inputValue="hsl.s" />
-    <NumberInput
-      @setValue="setLightness"
-      :min="0" :max="100"
-      :inputValue="hsl.l" />
+    <NumberInput @setValue="setHue" :min="0" :max="360" :inputValue="hsl.h" />
+    <NumberInput @setValue="setSaturation" :min="0" :max="100" :inputValue="hsl.s" />
+    <NumberInput @setValue="setLightness" :min="0" :max="100" :inputValue="hsl.l" />
     <NumberInput
       v-if="showTransparency"
       :percent="true"
       @setValue="setTransparency"
-      :min="0" :max="100"
-      :inputValue="transparency" />
+      :min="0"
+      :max="100"
+      :inputValue="transparency"
+    />
   </div>
 </template>
 
@@ -31,10 +24,6 @@ const showTransparency = inject('showTransparency')
 
 const hsl = inject('hsl')
 const transparency = inject('transparency')
-
-const setValue = (n, action) => {
-  emit(action, n)
-}
 
 const setHue = (hslColor) => {
   emit('setHsl', { h: hslColor, s: hsl.s, l: hsl.l })

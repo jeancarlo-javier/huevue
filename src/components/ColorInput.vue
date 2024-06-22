@@ -1,28 +1,10 @@
 <template>
-  <div
-    class="color-input-container"
-    :style="{ width: showTransparency ? '100%' : 'calc(100% - 8px)' }"
-  >
+  <div class="color-input-container" :style="{ width: showTransparency ? '100%' : 'calc(100% - 8px)' }">
     <div class="inputs-container">
       <span class="mode-text">{{ modeText }}</span>
-      <HSLInputs
-        v-if="mode.id ==='hsl'"
-        @setHue="setHue"
-        @setSaturation="setSaturation"
-        @setLightness="setLightness"
-        @setTransparency="setTransparency"
-
-        @setHsl="setHsl"
-      />
-      <HEXInputs
-        v-if="mode.id ==='hex'"
-        @setHex="(hex) => emit('setHex', hex)"
-      />
-      <RGBInputs
-        v-if="mode.id ==='rgb'"
-        @setRgb="setRgb"
-        @setTransparency="setTransparency"
-      />
+      <HSLInputs v-if="mode.id === 'hsl'" @setHsl="setHsl" @setTransparency="setTransparency" />
+      <HEXInputs v-if="mode.id === 'hex'" @setHex="(hex) => emit('setHex', hex)" @setTransparency="setTransparency" />
+      <RGBInputs v-if="mode.id === 'rgb'" @setRgb="setRgb" @setTransparency="setTransparency" />
     </div>
     <button data-test-id="hv-change-mode" @click="switchMode" role="button" class="hv-change-mode">
       <img src="@/assets/swap-ver.svg" alt="swap" />
@@ -55,24 +37,12 @@ const setHsl = (hslColor) => {
   emit('setHsl', hslColor)
 }
 
-const setLightness = (lightness) => {
-  emit('setLightness', lightness)
-}
-
-const setSaturation = (saturation) => {
-  emit('setSaturation', saturation)
-}
-
-const setHue = (hue) => {
-  emit('setHue', hue)
-}
-
 const setTransparency = (transparency) => {
   emit('setTransparency', transparency)
 }
 
 const switchMode = () => {
-  const currentModeIndex = colorModes.findIndex(m => m.id === mode.value.id)
+  const currentModeIndex = colorModes.findIndex((m) => m.id === mode.value.id)
   const nextModeIndex = currentModeIndex + 1 < colorModes.length ? currentModeIndex + 1 : 0
 
   return emit('setMode', colorModes[nextModeIndex].id)
@@ -105,7 +75,7 @@ const modeText = computed(() => {
   margin: auto 0;
   font-size: 11px;
   font-weight: 400;
-  color: #7C7C7C;
+  color: #7c7c7c;
 }
 .color-input-container .hv-change-mode {
   all: unset;

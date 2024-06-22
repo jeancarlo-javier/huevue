@@ -19,7 +19,7 @@ const useColorStore = () => {
   const transparency = ref(100)
   const showTransparency = ref(true)
 
-  const currentMode = ref(colorModes.find((m) => m.id === 'hsl'))
+  const currentMode = ref(colorModes.find((m) => m.id === 'rgb'))
 
   provide('isOpen', isOpen)
   provide('hue', hue)

@@ -134,7 +134,7 @@ import TransparencySlider from './components/TransparencySlider.vue'
 import ColorInput from './components/ColorInput.vue'
 import colorModes from './config/colorModes'
 import getColorType from './utils/color-types.js'
-import { hsbToRgb, hsbToHex } from './utils/color-conversions.js'
+import { hsbToRgb, hsbToHex, hsbToHsl } from './utils/color-conversions.js'
 import { transparencyToHex } from './utils/add-transparency.js'
 import useColorStore from './store/colorStore'
 import useColorManipulation from './composables/useColorManipulation.js'
@@ -146,7 +146,7 @@ const props = defineProps({
   },
   value: {
     type: String,
-    default: () => 'hsl(0deg 100% 50%)'
+    default: () => 'rgb(255, 0, 0)'
   }
 })
 
@@ -165,6 +165,7 @@ const {
   handleOpen
 } = useColorManipulation(store)
 
+// Watch for store.hsb changes and the current mode
 watch(
   [store.hsb, store.currentMode],
   ([hsbCurrentValue, currentModeValue]) => {
@@ -182,6 +183,14 @@ watch(
 
         store.hex.value = hexColor
       }
+
+      if (currentModeValue.id === 'hsl') {
+        const { h, s, l } = hsbToHsl(hsbCurrentValue.h, hsbCurrentValue.s, hsbCurrentValue.b)
+
+        store.hsl.h = h
+        store.hsl.s = s
+        store.hsl.l = l
+      }
     }
 
     store.updatingFromHueVue.value = false
@@ -191,6 +200,7 @@ watch(
   }
 )
 
+// Watch for porst.value
 watch(
   () => props.value,
   (value) => {
@@ -226,9 +236,7 @@ watch(
       // finalColor.value = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b}${showTransparency.value ? `, ${transparency.value / 100}` : ''})`
     }
   },
-  {
-    immediate: true
-  }
+  { immediate: true }
 )
 
 // Hex Watcher
@@ -246,9 +254,20 @@ watch(
       document.body.style.background = hexColor
     }
   },
-  {
-    immediate: true
-  }
+  { immediate: true }
+)
+
+// HSL Watcher
+watch(
+  [store.currentMode, store.hsl, store.transparency, store.showTransparency],
+  () => {
+    if (store.currentMode.value.id === 'hsl') {
+      document.body.style.background = `hsl(${store.hsl.h}, ${store.hsl.s}%, ${store.hsl.l}%${
+        store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
+      })`
+    }
+  },
+  { immediate: true }
 )
 </script>
 

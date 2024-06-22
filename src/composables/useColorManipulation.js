@@ -1,4 +1,4 @@
-import { rgbToHsb, hexToHsb } from '../utils/color-conversions.js'
+import { rgbToHsb, hexToHsb, hslToHsb } from '../utils/color-conversions.js'
 import { isRgbaValid, isHexValid, isHslValid } from '../utils/color-validators.js'
 import { rgbaStringToObject, hslStringToObject } from '../utils/string-color-to-object.js'
 import colorModes from '../config/colorModes'
@@ -23,8 +23,9 @@ const useColorManipulation = (store) => {
     store.hsl.l = hslColor.l
 
     store.updatingFromHueVue.value = true
-    // const newHsbColor = hslToHsb(store.hsl.h, store.hsl.s, store.hsl.l)
-    // setHsb(newHsbColor)
+    const newHsbColor = hslToHsb(store.hsl.h, store.hsl.s, store.hsl.l)
+    console.log(newHsbColor)
+    setHsb(newHsbColor)
   }
 
   const setRgb = (rgbColor) => {
@@ -41,6 +42,10 @@ const useColorManipulation = (store) => {
     store.hsb.h = hsbColor.h
     store.hsb.s = hsbColor.s
     store.hsb.b = hsbColor.b
+  }
+
+  const setTransparency = (value) => {
+    store.transparency.value = value
   }
 
   const setDefaultRgbaValue = (value) => {
@@ -61,7 +66,7 @@ const useColorManipulation = (store) => {
   const setDefaultHexValue = (value) => {
     if (!isHexValid(value)) return
 
-    store.hex.value = value
+    // store.hex.value = value
     store.updatingFromHueVue.value = true
 
     setHsb(hexToHsb(store.hex.value))
@@ -70,12 +75,9 @@ const useColorManipulation = (store) => {
   const setDefaultHslValue = (value) => {
     if (!isHslValid(value)) return
 
-    const hslObject = hslStringToObject(value)
-    console.log(hslObject)
-  }
+    store.updatingFromHueVue.value = true
 
-  const setTransparency = (value) => {
-    store.transparency.value = value
+    setHsl(hslStringToObject(value))
   }
 
   const setMode = (modeId) => {
@@ -92,10 +94,10 @@ const useColorManipulation = (store) => {
     setHex,
     setHsl,
     setHsb,
+    setTransparency,
     setDefaultRgbaValue,
     setDefaultHexValue,
     setDefaultHslValue,
-    setTransparency,
     setMode,
     handleOpen
   }
