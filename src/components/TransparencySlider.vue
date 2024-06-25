@@ -14,9 +14,7 @@
 </template>
 
 <script setup>
-import {
-  computed, inject, ref, onUnmounted, onUpdated
-} from 'vue'
+import { computed, inject, ref, onUnmounted, onUpdated } from 'vue'
 import SliderThumb from './SliderThumb.vue'
 
 const emit = defineEmits(['setTransparency'])
@@ -81,10 +79,11 @@ const handleThumbEvents = (thumbRef) => {
   let basePosition = null
 
   const calculateNewPosition = (pageY) => {
-    if (!pageY || !initialTopMousePosition) throw new Error('Mouse position data and initial mouse position must be valid.')
+    if (!pageY || !initialTopMousePosition)
+      throw new Error('Mouse position data and initial mouse position must be valid.')
 
     // Calcula la nueva posición con un factor de escala para aumentar la "velocidad"
-    const yPosition = (basePosition + (initialTopMousePosition - pageY))
+    const yPosition = basePosition + (initialTopMousePosition - pageY)
 
     const clampedYPosition = Math.min(Math.max(yPosition, 0), selectorHeight)
 
@@ -212,7 +211,7 @@ onUpdated(() => {
 }
 
 .transparency-slider::after {
-  content: "";
+  content: '';
   background-image: url(/src/assets/bg-transparency.svg);
   z-index: -1;
   left: 0;

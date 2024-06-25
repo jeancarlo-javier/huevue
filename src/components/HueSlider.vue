@@ -9,9 +9,7 @@
 </template>
 
 <script setup>
-import {
-  computed, ref, onUnmounted, onUpdated, inject
-} from 'vue'
+import { computed, ref, onUnmounted, onUpdated, inject } from 'vue'
 import SliderThumb from './SliderThumb.vue'
 
 const emit = defineEmits(['setHue'])
@@ -40,7 +38,8 @@ const hueLeftPosition = computed(() => {
 })
 
 const calculateNewPosition = (pageX, initialLeftMousePosition, hueSliderWidth, basePosition) => {
-  if (!pageX || initialLeftMousePosition === null || initialLeftMousePosition === undefined) throw new Error('Mouse position data and initial mouse position must be valid.')
+  if (!pageX || initialLeftMousePosition === null || initialLeftMousePosition === undefined)
+    throw new Error('Mouse position data and initial mouse position must be valid.')
 
   // Calcula nueva posición garantizando que esté dentro de los límites
   const xPosition = basePosition + pageX - initialLeftMousePosition
@@ -80,7 +79,7 @@ const handleThumbEvents = (thumbRef) => {
         const newHuePosition = calculateNewPosition(e.pageX, initialLeftMousePosition, hueSliderWidth, basePosition)
 
         let newLeftPositionPercent = (newHuePosition * 100) / hueSliderWidth
-        newLeftPositionPercent = ((360 * newLeftPositionPercent) / 100)
+        newLeftPositionPercent = (360 * newLeftPositionPercent) / 100
         newLeftPositionPercent = Math.round(newLeftPositionPercent)
 
         emit('setHue', newLeftPositionPercent)
@@ -93,7 +92,7 @@ const handleThumbEvents = (thumbRef) => {
       // Establece las variables iniciales cuando se presiona el mouse
       initialLeftMousePosition = e.pageX
       initialHueValue = hue.value
-      basePosition = (hueSliderWidth * (initialHueValue * 100) / 360) / 100
+      basePosition = (hueSliderWidth * (initialHueValue * 100)) / 360 / 100
 
       document.body.addEventListener('mousemove', mousemove, { passive: true })
     }

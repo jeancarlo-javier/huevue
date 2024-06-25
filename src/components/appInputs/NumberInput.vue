@@ -3,17 +3,21 @@
     :class="{
       'hv-input-editing': userIsTyping,
       'hv-input-number-container': true,
-      'hv-percent': percent}">
+      'hv-percent': percent
+    }"
+  >
     <input
       @keydown="setValue"
       @click="selectInputText"
       @blur="unselectInputText"
       :value="inputValue"
       ref="hueInput"
-      :min="min" :max="max"
+      :min="min"
+      :max="max"
       type="number"
-      :class="{ 'hv-input-percent': percent }" />
-      <span v-if="percent" class="hv-input-number-percent">%</span>
+      :class="{ 'hv-input-percent': percent }"
+    />
+    <span v-if="percent" class="hv-input-number-percent">%</span>
   </div>
 </template>
 
@@ -132,7 +136,7 @@ const unselectInputText = (e) => {
 </script>
 
 <style scoped>
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
   all: unset;
@@ -151,12 +155,13 @@ input[type="number"] {
   flex: 1 1 calc(25% + 132px);
 }
 
-.hv-percent input[type="number"] {
+.hv-percent input[type='number'] {
   padding-right: 12px;
 }
 
 /* Para Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
@@ -178,6 +183,6 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {
 }
 
 .hv-input-editing .hv-input-number-percent {
-  color: #7C7C7C;
+  color: #7c7c7c;
 }
 </style>

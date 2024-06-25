@@ -2,7 +2,8 @@
   <div
     ref="paletteSelector"
     role="slider"
-    :style="{ background: hueBackground, color: 'red' }" class="pallete"
+    :style="{ background: hueBackground, color: 'red' }"
+    class="pallete"
     @mousedown="handlePositionAndStartDragging"
   >
     <div class="white-gradient" />
@@ -37,15 +38,19 @@ const paletteBrightness = ref(null)
 const updatingFromThumb = ref(false)
 
 // Detect saturation and lightness changes and set the default values of paletteSaturation and paletteBrightness
-watch([hsb], () => {
-  if (updatingFromThumb.value) {
-    updatingFromThumb.value = false
-    return
-  }
+watch(
+  [hsb],
+  () => {
+    if (updatingFromThumb.value) {
+      updatingFromThumb.value = false
+      return
+    }
 
-  paletteSaturation.value = hsb.s
-  paletteBrightness.value = hsb.b
-}, { immediate: true })
+    paletteSaturation.value = hsb.s
+    paletteBrightness.value = hsb.b
+  },
+  { immediate: true }
+)
 
 const palleteLeftPosition = computed(() => {
   try {
@@ -103,7 +108,7 @@ const handleThumbEvents = (thumbRef) => {
     const deltaY = pageY - initialY
 
     const xPosition = Math.max(0, Math.min(baseX + deltaX, paletteWidth))
-    const yPosition = Math.max(0, Math.min((baseY - deltaY), paletteHeight))
+    const yPosition = Math.max(0, Math.min(baseY - deltaY, paletteHeight))
 
     // Postcondición: xPosition y yPosition deben estar dentro de los límites del paleta.
     if (xPosition < 0 || xPosition > paletteWidth || yPosition < 0 || yPosition > paletteHeight) {
@@ -223,37 +228,37 @@ onUpdated(() => {
 </script>
 
 <style scoped>
-  .pallete {
-    position: relative;
-    border-radius: var(--border-radius);
-    width: 160px;
-    height: 160px;
-  }
-  .white-gradient {
-    background: linear-gradient(to right, white, transparent);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: var(--border-radius);
-  }
-  .black-gradient {
-    background: linear-gradient(to top, black, transparent);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: var(--border-radius);
-  }
-  .border {
-    border: 2px solid white;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: var(--border-radius);
-  }
+.pallete {
+  position: relative;
+  border-radius: var(--border-radius);
+  width: 160px;
+  height: 160px;
+}
+.white-gradient {
+  background: linear-gradient(to right, white, transparent);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius);
+}
+.black-gradient {
+  background: linear-gradient(to top, black, transparent);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius);
+}
+.border {
+  border: 2px solid white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius);
+}
 </style>

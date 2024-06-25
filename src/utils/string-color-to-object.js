@@ -5,7 +5,7 @@ import { rgbRegex, hslRegex, hslPatternSpaceSeparated, hslaPattern } from './reg
  * @param {String} color - Rgba String Color
  * @returns {Object}
  */
-export function rgbaStringToObject (color) {
+export function rgbaStringToObject(color) {
   const match = color.match(rgbRegex)
 
   if (!match) {
@@ -47,7 +47,7 @@ export function rgbaStringToObject (color) {
  * @param {string} hslColor - The HSL or HSLA string to convert.
  * @returns {Object|null} An object with hue, saturation, lightness, and optional alpha properties, or null if the input is invalid.
  */
-export function hslStringToObject (hslColor) {
+export function hslStringToObject(hslColor) {
   const match = hslColor.match(hslRegex) || hslColor.match(hslPatternSpaceSeparated) || hslColor.match(hslaPattern)
 
   if (!match) return null

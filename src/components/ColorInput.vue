@@ -91,7 +91,9 @@ const modeText = computed(() => {
   padding: 0px 4px 0 19px;
   border-radius: 9px;
   box-shadow: 0px 1px 3px 1px rgb(0 0 0 / 5%);
-  transition: left 0.3s ease-in-out, background-color 0.1s;
+  transition:
+    left 0.3s ease-in-out,
+    background-color 0.1s;
 }
 .color-input-container:hover .hv-change-mode {
   left: calc(100% - 16px);

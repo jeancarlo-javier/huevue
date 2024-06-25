@@ -11,7 +11,6 @@ describe('hueVueProps', () => {
       //     value: '#16161D'
       //   }
       // })
-
       // expect(wrapper.vm.hue).toBe(240)
       // expect(wrapper.vm.saturation).toBe(14)
       // expect(wrapper.vm.lightness).toBe(10)

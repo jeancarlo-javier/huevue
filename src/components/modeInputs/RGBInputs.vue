@@ -1,23 +1,16 @@
 <template>
   <div>
-    <NumberInput
-      @setValue="setRed"
-      :min="0" :max="255"
-      :inputValue="red" />
-    <NumberInput
-      @setValue="setGreen"
-      :min="0" :max="255"
-      :inputValue="green" />
-    <NumberInput
-      @setValue="setBlue"
-      :min="0" :max="255"
-      :inputValue="blue" />
+    <NumberInput @setValue="setRed" :min="0" :max="255" :inputValue="red" />
+    <NumberInput @setValue="setGreen" :min="0" :max="255" :inputValue="green" />
+    <NumberInput @setValue="setBlue" :min="0" :max="255" :inputValue="blue" />
     <NumberInput
       v-if="showTransparency"
       :percent="true"
       @setValue="(n) => emit('setTransparency', n)"
-      :min="0" :max="100"
-      :inputValue="transparency" />
+      :min="0"
+      :max="100"
+      :inputValue="transparency"
+    />
   </div>
 </template>
 
@@ -38,17 +31,21 @@ const blue = ref()
 
 const updatingFromInput = ref(false)
 
-watch(rgb, (newRgb) => {
-  if (!updatingFromInput.value) {
-    const { r, g, b } = newRgb
+watch(
+  rgb,
+  (newRgb) => {
+    if (!updatingFromInput.value) {
+      const { r, g, b } = newRgb
 
-    red.value = r
-    green.value = g
-    blue.value = b
-  }
+      red.value = r
+      green.value = g
+      blue.value = b
+    }
 
-  updatingFromInput.value = false
-}, { immediate: true })
+    updatingFromInput.value = false
+  },
+  { immediate: true }
+)
 
 const setRed = (n) => {
   red.value = n

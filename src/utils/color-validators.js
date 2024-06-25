@@ -5,7 +5,7 @@ import { rgbRegex, hslRegex, hslPatternSpaceSeparated, hslaPattern } from './reg
  * @param {string} hexColor
  * @returns {boolean}
  */
-export function isHexValid (hexColor) {
+export function isHexValid(hexColor) {
   // Verify that the string starts with #
   if (!hexColor.startsWith('#')) {
     return false
@@ -29,7 +29,7 @@ export function isHexValid (hexColor) {
  * @param {String} rgbaColor - Rgba String Color
  * @returns {Boolean}
  */
-export function isRgbaValid (rgbaColor) {
+export function isRgbaValid(rgbaColor) {
   if (rgbRegex.test(rgbaColor)) {
     return true
   }
@@ -42,7 +42,7 @@ export function isRgbaValid (rgbaColor) {
  * @param {string} hslColor - The HSL or HSLA color string in the format "hsl(H, S%, L%)" or "hsla(H, S%, L%, A)".
  * @returns {boolean} - Returns true if the HSL or HSLA color is valid, false otherwise.
  */
-export function isHslValid (hslColor) {
+export function isHslValid(hslColor) {
   const match = hslColor.match(hslRegex) || hslColor.match(hslPatternSpaceSeparated) || hslColor.match(hslaPattern)
 
   if (!match) return false

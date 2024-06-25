@@ -6,7 +6,8 @@
     @blur="unselectInputText"
     :value="inputValue"
     ref="hueInput"
-    type="text" />
+    type="text"
+  />
 </template>
 
 <script setup>
@@ -91,7 +92,7 @@ const unselectInputText = (e) => {
 </script>
 
 <style scoped>
-input[type="text"] {
+input[type='text'] {
   -moz-appearance: textfield;
   appearance: textfield;
   all: unset;

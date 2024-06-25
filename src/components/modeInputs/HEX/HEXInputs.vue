@@ -1,16 +1,15 @@
 <template>
   <div>
-    <HexTextInput
-      :inputValue="hexColor"
-      @setValue="setValue"
-      :style="{ flex: 2 }" />
+    <HexTextInput :inputValue="hexColor" @setValue="setValue" :style="{ flex: 2 }" />
     <NumberInput
       v-if="showTransparency"
       :percent="true"
       @setValue="(n) => setTransparency(n)"
-      :min="0" :max="100"
+      :min="0"
+      :max="100"
       :inputValue="transparency"
-      :style="{ flex: 1 }" />
+      :style="{ flex: 1 }"
+    />
   </div>
 </template>
 

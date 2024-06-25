@@ -19,18 +19,18 @@ const showTransparency = inject('showTransparency')
 </script>
 
 <style scoped>
-  .hue-vue-container{
-    position: relative;
-    width: fit-content;
-    user-select: none;
-    --border-radius: 9px;
-  }
-  .color-picker-container {
-    position: absolute;
-    top: 2px;
-    left: calc(100% + 10px);
-    display: grid;
-    grid-template-columns: 1fr min-content;
-    gap: 8px;
-  }
+.hue-vue-container {
+  position: relative;
+  width: fit-content;
+  user-select: none;
+  --border-radius: 9px;
+}
+.color-picker-container {
+  position: absolute;
+  top: 2px;
+  left: calc(100% + 10px);
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  gap: 8px;
+}
 </style>

@@ -1,4 +1,4 @@
-function suggestHexColor (input) {
+function suggestHexColor(input) {
   if (typeof input !== 'string') {
     return null
   }

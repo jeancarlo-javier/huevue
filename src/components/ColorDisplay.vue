@@ -1,9 +1,5 @@
 <template>
-  <button
-    @click="emit('handleOpen')"
-    :style="{ background: backgroundColor }"
-    class="colorDisplay"
-  />
+  <button @click="emit('handleOpen')" :style="{ background: backgroundColor }" class="colorDisplay" />
 </template>
 
 <script setup>
@@ -23,7 +19,8 @@ const backgroundColor = inject('HSLColor')
   border-radius: 9px;
   cursor: pointer;
 }
-.colorDisplay::after {content: "";
+.colorDisplay::after {
+  content: '';
   background-image: url(/src/assets/bg-transparency.svg);
   background-position: center;
   z-index: -1;
