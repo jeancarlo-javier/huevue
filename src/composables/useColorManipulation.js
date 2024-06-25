@@ -6,7 +6,6 @@ import colorModes from '../config/colorModes'
 const useColorManipulation = (store) => {
   const setHue = (value) => {
     store.hue.value = value
-    console.log(value)
   }
 
   const setHex = (hexColor) => {
