@@ -23,7 +23,7 @@ const useColorManipulation = (store) => {
 
     store.updatingFromHueVue.value = true
     const newHsbColor = hslToHsb(store.hsl.h, store.hsl.s, store.hsl.l)
-    console.log(newHsbColor)
+
     setHsb(newHsbColor)
   }
 
@@ -34,6 +34,7 @@ const useColorManipulation = (store) => {
 
     store.updatingFromHueVue.value = true
     const newHsbColor = rgbToHsb(store.rgb.r, store.rgb.g, store.rgb.b)
+
     setHsb(newHsbColor)
   }
 
@@ -65,7 +66,7 @@ const useColorManipulation = (store) => {
   const setDefaultHexValue = (value) => {
     if (!isHexValid(value)) return
 
-    // store.hex.value = value
+    store.hex.value = value.toUpperCase()
     store.updatingFromHueVue.value = true
 
     setHsb(hexToHsb(store.hex.value))

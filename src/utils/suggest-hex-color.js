@@ -33,7 +33,7 @@ function suggestHexColor(input) {
   }
 
   // Return the most likely color
-  return possibilities[0]
+  return possibilities[0].toUpperCase()
 }
 
 export default suggestHexColor

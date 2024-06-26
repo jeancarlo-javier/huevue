@@ -146,11 +146,19 @@ const props = defineProps({
   },
   value: {
     type: String,
-    default: () => 'rgb(255, 0, 0)'
+    default: () => 'rgb(255, 200, 0)'
+  },
+  mode: {
+    type: String,
+    default: colorModes[2].id,
+    validator: (value) => {
+      return colorModes.find((m) => m.id === value)
+    }
   }
 })
 
-const store = useColorStore()
+const store = useColorStore(props.mode)
+
 const {
   setHue,
   setRgb,

@@ -6,7 +6,13 @@
       <HEXInputs v-if="mode.id === 'hex'" @setHex="(hex) => emit('setHex', hex)" @setTransparency="setTransparency" />
       <RGBInputs v-if="mode.id === 'rgb'" @setRgb="setRgb" @setTransparency="setTransparency" />
     </div>
-    <button data-test-id="hv-change-mode" @click="switchMode" role="button" class="hv-change-mode">
+    <button
+      v-if="isModeSwitchEnabled"
+      data-test-id="hv-change-mode"
+      @click="switchMode"
+      role="button"
+      class="hv-change-mode"
+    >
       <img src="@/assets/swap-ver.svg" alt="swap" />
     </button>
   </div>
@@ -22,6 +28,7 @@ import colorModes from '@/config/colorModes'
 const mode = inject('mode')
 
 const showTransparency = inject('showTransparency')
+const isModeSwitchEnabled = inject('isModeSwitchEnabled')
 
 if (!mode) {
   throw new Error('No mode provided')
@@ -91,9 +98,7 @@ const modeText = computed(() => {
   padding: 0px 4px 0 19px;
   border-radius: 9px;
   box-shadow: 0px 1px 3px 1px rgb(0 0 0 / 5%);
-  transition:
-    left 0.3s ease-in-out,
-    background-color 0.1s;
+  transition: left 0.3s ease-in-out, background-color 0.1s;
 }
 .color-input-container:hover .hv-change-mode {
   left: calc(100% - 16px);

@@ -1,11 +1,11 @@
 <template>
-  <div class="hue-vue-container">
+  <div data-test-id="app-layout" class="hue-vue-container">
     <slot name="colorDisplay" />
-    <div v-if="isOpen" class="color-picker-container">
+    <div v-if="isOpen" data-test-id="color-picker-container" class="color-picker-container">
       <slot name="colorInput" />
       <!-- <div /> -->
       <slot name="pallete" />
-      <slot v-if="showTransparency" name="transparencySlider" />
+      <slot v-if="showTransparency" data-test-id="transparency-slider" name="transparencySlider" />
       <slot name="hueSlider" />
     </div>
   </div>

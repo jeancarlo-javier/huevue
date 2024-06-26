@@ -267,7 +267,7 @@ export function hsbToHex(h, s, b) {
   // Convert RGB values to hexadecimal and pad with zeroes if necessary
   const toHex = (x) => x.toString(16).padStart(2, '0')
 
-  return `#${toHex(r)}${toHex(g)}${toHex(b_)}`
+  return `#${toHex(r)}${toHex(g)}${toHex(b_)}`.toUpperCase()
 }
 
 /**

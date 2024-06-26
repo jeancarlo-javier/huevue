@@ -1,7 +1,7 @@
 import { reactive, ref, provide } from 'vue'
 import colorModes from '../config/colorModes'
 
-const useColorStore = () => {
+const useColorStore = (mode) => {
   const isOpen = ref(true)
   const updatingFromHueVue = ref(false)
 
@@ -19,7 +19,9 @@ const useColorStore = () => {
   const transparency = ref(100)
   const showTransparency = ref(true)
 
-  const currentMode = ref(colorModes.find((m) => m.id === 'rgb'))
+  const currentMode = ref(colorModes.find((m) => m.id === mode))
+
+  const isModeSwitchEnabled = ref(false)
 
   provide('isOpen', isOpen)
   provide('hue', hue)
@@ -32,8 +34,10 @@ const useColorStore = () => {
   provide('transparency', transparency)
   provide('showTransparency', showTransparency)
   provide('mode', currentMode)
+  provide('isModeSwitchEnabled', isModeSwitchEnabled)
 
   return {
+    isOpen,
     hue,
     HSLColor,
     finalColor,

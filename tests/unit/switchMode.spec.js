@@ -9,7 +9,9 @@ describe('ColorInput > SwitchMode', () => {
   it('should render switch mode button', () => {
     const wrapper = shallowMount(ColorInput, {
       global: {
-        provide: baseProvider()
+        provide: baseProvider({
+          isModeSwitchEnabled: true
+        })
       }
     })
 
@@ -21,7 +23,9 @@ describe('ColorInput > SwitchMode', () => {
   it('should emit setMode event on click', () => {
     const wrapper = shallowMount(ColorInput, {
       global: {
-        provide: baseProvider()
+        provide: baseProvider({
+          isModeSwitchEnabled: true
+        })
       }
     })
 
@@ -35,7 +39,9 @@ describe('ColorInput > SwitchMode', () => {
   it('should emit setMode event on click', () => {
     const wrapper = shallowMount(ColorInput, {
       global: {
-        provide: baseProvider()
+        provide: baseProvider({
+          isModeSwitchEnabled: true
+        })
       }
     })
 
@@ -52,7 +58,8 @@ describe('ColorInput > SwitchMode', () => {
     const wrapper = shallowMount(ColorInput, {
       global: {
         provide: baseProvider({
-          mode
+          mode,
+          isModeSwitchEnabled: true
         })
       }
     })

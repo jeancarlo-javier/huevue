@@ -20,7 +20,6 @@ describe('Color Type', () => {
   it('returns "hsl" for a valid hsl color', () => {
     validHslColors.forEach((color) => {
       const colorType = getColorType(color)
-      console.log(color, colorType)
       expect(colorType).toBe('hsl')
     })
   })

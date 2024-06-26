@@ -33,7 +33,7 @@ watch(inputValue, (value) => {
 })
 
 const setValue = (e) => {
-  const value = e.target.value
+  let value = e.target.value
 
   // Confirm the current value with 'Enter' if it's a valid hex color
   if (e.key === 'Enter') {
@@ -42,6 +42,8 @@ const setValue = (e) => {
     const isValid = isHexValid(value)
 
     if (isValid) {
+      value = value.toUpperCase()
+
       lastValidValue.value = value
 
       e.target.blur()

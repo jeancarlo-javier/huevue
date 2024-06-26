@@ -1,5 +1,3 @@
-import { b } from 'vitest/dist/suite-IbNSsUWN.js'
-
 module.exports = {
   env: {
     browser: true,
