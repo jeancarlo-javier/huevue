@@ -1,6 +1,7 @@
 <template>
   <div
     @mousedown="handlePositionAndStartDragging"
+    @touchstart="handlePositionAndStartDragging"
     ref="transparencySelector"
     class="transparency-slider"
     :style="{ background: backgroundGradient }"
@@ -17,6 +18,7 @@
 import { computed, inject, ref, onUnmounted, onUpdated } from 'vue'
 import SliderThumb from './SliderThumb.vue'
 
+// Emits the setTransparency event to the parent component
 const emit = defineEmits(['setTransparency'])
 const transparencySelector = ref(null)
 
@@ -30,6 +32,7 @@ const rgb = inject('rgb')
 const hex = inject('hex')
 const hsl = inject('hsl')
 
+// Computes the background gradient based on the color mode
 const backgroundGradient = computed(() => {
   let color
   if (mode.value.id === 'hex') {
@@ -43,16 +46,15 @@ const backgroundGradient = computed(() => {
   return `linear-gradient(180deg, ${color}, transparent)`
 })
 
-// Calcula la posición del slider a partir del valor hue.
+// Calculates the position of the slider based on the transparency value
 const selectorBottomPosition = computed(() => {
   try {
     const normalizeBottomPosition = (transparency.value / 100) * 6
 
     if (transparency.value < 0 || transparency.value > 100) {
-      throw new Error('Hue Position out of bounds.')
+      throw new Error('Transparency position out of bounds.')
     }
 
-    // Ahora se utiliza un solo return con la expresión completa
     return `calc(${transparency.value}% - ${Math.abs(normalizeBottomPosition)}px)`
   } catch (error) {
     console.error(error.message)
@@ -60,10 +62,9 @@ const selectorBottomPosition = computed(() => {
   }
 })
 
-// Maneja los eventos de interacción con el thumb del slider.
+// Handles the thumb events for dragging
 const handleThumbEvents = (thumbRef) => {
-  // Precondiciones: Verificar que los inputs necesarios no sean nulos
-  if (!thumbRef || !transparencySelector.value || !transparencySelector.value) {
+  if (!thumbRef || !transparencySelector.value) {
     throw new Error('ThumbRef and transparencySelector must be initialized and non-null.')
   }
 
@@ -71,23 +72,21 @@ const handleThumbEvents = (thumbRef) => {
 
   const selectorHeight = transparencySelector.value.offsetHeight
   if (selectorHeight <= 0) {
-    throw new Error('transparencySelector width must be positive.')
+    throw new Error('transparencySelector height must be positive.')
   }
 
-  let initialTopMousePosition = null
+  let initialTopPosition = null
   let initialTransparencyValue = 0
   let basePosition = null
 
   const calculateNewPosition = (pageY) => {
-    if (!pageY || !initialTopMousePosition)
-      throw new Error('Mouse position data and initial mouse position must be valid.')
+    if (!pageY || !initialTopPosition) {
+      throw new Error('Position data and initial position must be valid.')
+    }
 
-    // Calcula la nueva posición con un factor de escala para aumentar la "velocidad"
-    const yPosition = basePosition + (initialTopMousePosition - pageY)
-
+    const yPosition = basePosition + (initialTopPosition - pageY)
     const clampedYPosition = Math.min(Math.max(yPosition, 0), selectorHeight)
 
-    // Postcondition: yPosition debe estar dentro de los límites del selector.
     if (clampedYPosition < 0 || clampedYPosition > selectorHeight) {
       throw new Error('clampedYPosition out of bounds.')
     }
@@ -95,47 +94,52 @@ const handleThumbEvents = (thumbRef) => {
     return clampedYPosition
   }
 
-  const mousemove = (e) => {
-    // Solo mueve si se ha inicializado la posición inicial del mouse
-    if (initialTopMousePosition !== null) {
-      const newHuePosition = calculateNewPosition(e.pageY)
+  const moveHandler = (e) => {
+    if (initialTopPosition !== null) {
+      const pageY = e.pageY !== undefined ? e.pageY : e.touches[0].pageY
+      const newPosition = calculateNewPosition(pageY)
 
-      let newTransparency = (newHuePosition * 100) / selectorHeight
+      let newTransparency = (newPosition * 100) / selectorHeight
       newTransparency = Math.round(newTransparency)
 
       emit('setTransparency', newTransparency)
     }
   }
 
-  const mousedown = (e) => {
+  const downHandler = (e) => {
     e.stopPropagation()
-    // Establece las variables iniciales cuando se presiona el mouse
-    initialTopMousePosition = e.pageY
+    initialTopPosition = e.pageY !== undefined ? e.pageY : e.touches[0].pageY
     initialTransparencyValue = transparency.value
     basePosition = (selectorHeight * initialTransparencyValue) / 100
 
-    document.body.addEventListener('mousemove', mousemove, { passive: true })
+    document.body.addEventListener('mousemove', moveHandler, { passive: true })
+    document.body.addEventListener('touchmove', moveHandler, { passive: true })
   }
 
-  const mouseup = () => {
-    // Restablece las variables al soltar el mouse y remueve el evento de movimiento
-    document.body.removeEventListener('mousemove', mousemove)
+  const upHandler = () => {
+    document.body.removeEventListener('mousemove', moveHandler)
+    document.body.removeEventListener('touchmove', moveHandler)
 
-    initialTopMousePosition = null
+    initialTopPosition = null
     initialTransparencyValue = 0
     basePosition = null
   }
 
-  // Añade los eventos necesarios al thumbRef y maneja el desmontaje de eventos
-  thumbRef.addEventListener('mousedown', mousedown)
-  document.body.addEventListener('mouseup', mouseup)
-  document.body.addEventListener('mouseleave', mouseup)
+  // Add event listeners for mouse and touch events
+  thumbRef.addEventListener('mousedown', downHandler)
+  thumbRef.addEventListener('touchstart', downHandler)
+  document.body.addEventListener('mouseup', upHandler)
+  document.body.addEventListener('touchend', upHandler)
+  document.body.addEventListener('mouseleave', upHandler)
 
   onUnmounted(() => {
-    thumbRef.removeEventListener('mousedown', mousedown)
-    document.body.removeEventListener('mouseup', mouseup)
-    document.body.removeEventListener('mousemove', mousemove)
-    document.body.removeEventListener('mouseleave', mouseup)
+    thumbRef.removeEventListener('mousedown', downHandler)
+    thumbRef.removeEventListener('touchstart', downHandler)
+    document.body.removeEventListener('mouseup', upHandler)
+    document.body.removeEventListener('mousemove', moveHandler)
+    document.body.removeEventListener('touchend', upHandler)
+    document.body.removeEventListener('touchmove', moveHandler)
+    document.body.removeEventListener('mouseleave', upHandler)
   })
 }
 
@@ -145,7 +149,7 @@ const syntheticMouseDownState = ref({
   clientY: null
 })
 
-/** Interpolates a value based on an input percentage. */
+// Interpolates a value based on an input percentage
 const interpolateValue = (entry, minReturn, maxReturn) => {
   try {
     if (entry < 0 || entry > 100) {
@@ -158,12 +162,13 @@ const interpolateValue = (entry, minReturn, maxReturn) => {
   }
 }
 
+// Handles the initial position and starts the dragging process
 const handlePositionAndStartDragging = (e) => {
   if (!transparencySelector.value) throw new Error('transparencySelector cannot be null')
 
   const selectorTopPosition = transparencySelector.value.getBoundingClientRect().bottom
 
-  let deltaY = selectorTopPosition - e.clientY
+  let deltaY = selectorTopPosition - (e.clientY || e.touches[0].clientY)
   deltaY += interpolateValue((deltaY * 100) / transparencySelector.value.offsetHeight, -6, 6)
 
   if (!deltaY) return
@@ -175,13 +180,13 @@ const handlePositionAndStartDragging = (e) => {
 
   syntheticMouseDownState.value = {
     active: true,
-    clientX: e.pageX,
-    clientY: e.pageY
+    clientX: e.pageX !== undefined ? e.pageX : e.touches[0].pageX,
+    clientY: e.pageY !== undefined ? e.pageY : e.touches[0].pageY
   }
 }
 
 onUpdated(() => {
-  // Activa Programáticamente
+  // Programmatically activate
   if (syntheticMouseDownState.value.active) {
     const eventMousedown = new MouseEvent('mousedown', {
       bubbles: true,

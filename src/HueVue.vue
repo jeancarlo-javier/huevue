@@ -5,8 +5,6 @@
     </template>
     <template v-slot:colorInput>
       <ColorInput
-        @setLightness="setLightness"
-        @setSaturation="setSaturation"
         @setHue="setHue"
         @setTransparency="setTransparency"
         @setMode="setMode"
@@ -16,7 +14,7 @@
       />
     </template>
     <template v-slot:pallete>
-      <PalleteSelector @setLightness="setLightness" @setSaturation="setSaturation" @setHsb="setHsb" />
+      <PalleteSelector @setHsb="setHsb" />
     </template>
     <template v-slot:hueSlider>
       <HueSlider @setHue="setHue" />
@@ -146,11 +144,11 @@ const props = defineProps({
   },
   value: {
     type: String,
-    default: () => 'rgb(255, 200, 0)'
+    default: () => ''
   },
   mode: {
     type: String,
-    default: colorModes[2].id,
+    default: colorModes[0].id,
     validator: (value) => {
       return colorModes.find((m) => m.id === value)
     }

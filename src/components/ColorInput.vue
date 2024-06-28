@@ -34,7 +34,7 @@ if (!mode) {
   throw new Error('No mode provided')
 }
 
-const emit = defineEmits(['setMode', 'setLightness', 'setSaturation', 'setHue', 'setTransparency', 'setRgb', 'setHsl'])
+const emit = defineEmits(['setMode', 'setHue', 'setTransparency', 'setRgb', 'setHsl'])
 
 const setRgb = (rgbaColor) => {
   emit('setRgb', rgbaColor)

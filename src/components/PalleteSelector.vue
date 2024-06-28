@@ -21,7 +21,7 @@
 import SliderThumb from './SliderThumb.vue'
 import { computed, onUnmounted, ref, inject, watch, onUpdated } from 'vue'
 
-const emit = defineEmits(['setLightness', 'setSaturation', 'setHsb'])
+const emit = defineEmits(['setHsb'])
 const hue = inject('hue')
 
 const hsb = inject('hsb')

@@ -1,5 +1,11 @@
 <template>
-  <div data-test-id="hue-slider" ref="hueSlider" @mousedown="handlePositionAndStartDragging" class="hue-slider">
+  <div
+    data-test-id="hue-slider"
+    ref="hueSlider"
+    @mousedown="handlePositionAndStartDragging"
+    @touchstart="handlePositionAndStartDragging"
+    class="hue-slider"
+  >
     <SliderThumb
       @setThumbRef="handleThumbEvents"
       :thumbStyle="{ left: hueLeftPosition }"
@@ -19,11 +25,10 @@ const thumbChildRef = ref(null)
 
 const hue = inject('hue')
 
-// Calcula la posición del slider a partir del valor hue.
+// Calculate the slider position from the hue value.
 const hueLeftPosition = computed(() => {
   try {
     const thumbLeftPercent = (hue.value * 100) / 360
-
     const normalizeLeftPosition = (thumbLeftPercent / 100) * 6
 
     if (thumbLeftPercent < 0 || thumbLeftPercent > 100) {
@@ -38,15 +43,15 @@ const hueLeftPosition = computed(() => {
 })
 
 const calculateNewPosition = (pageX, initialLeftMousePosition, hueSliderWidth, basePosition) => {
-  if (!pageX || initialLeftMousePosition === null || initialLeftMousePosition === undefined)
+  if (!pageX || initialLeftMousePosition === null || initialLeftMousePosition === undefined) {
     throw new Error('Mouse position data and initial mouse position must be valid.')
+  }
 
-  // Calcula nueva posición garantizando que esté dentro de los límites
+  // Calculate new position ensuring it stays within bounds
   const xPosition = basePosition + pageX - initialLeftMousePosition
-
   const clampedXPosition = Math.min(Math.max(xPosition, 0), hueSliderWidth)
 
-  // Postcondition: xPosition y yPosition deben estar dentro de los límites del paleta.
+  // Postcondition: xPosition and yPosition must be within bounds of the palette.
   if (clampedXPosition < 0 || clampedXPosition > hueSliderWidth) {
     throw new Error('clampedXPosition out of bounds.')
   }
@@ -54,11 +59,11 @@ const calculateNewPosition = (pageX, initialLeftMousePosition, hueSliderWidth, b
   return clampedXPosition
 }
 
-// Maneja los eventos de interacción con el thumb del slider.
+// Handle interaction events with the slider thumb.
 const handleThumbEvents = (thumbRef) => {
   try {
-    // Precondiciones: Verificar que los inputs necesarios no sean nulos
-    if (!thumbRef || !hueSlider.value || !hueSlider.value) {
+    // Preconditions: Ensure necessary inputs are not null
+    if (!thumbRef || !hueSlider.value) {
       throw new Error('ThumbRef and hueSlider must be initialized and non-null.')
     }
 
@@ -73,11 +78,9 @@ const handleThumbEvents = (thumbRef) => {
     let initialHueValue = 0
     let basePosition = null
 
-    const mousemove = (e) => {
-      // Solo mueve si se ha inicializado la posición inicial del mouse
+    const move = (pageX) => {
       if (initialLeftMousePosition !== null) {
-        const newHuePosition = calculateNewPosition(e.pageX, initialLeftMousePosition, hueSliderWidth, basePosition)
-
+        const newHuePosition = calculateNewPosition(pageX, initialLeftMousePosition, hueSliderWidth, basePosition)
         let newLeftPositionPercent = (newHuePosition * 100) / hueSliderWidth
         newLeftPositionPercent = (360 * newLeftPositionPercent) / 100
         newLeftPositionPercent = Math.round(newLeftPositionPercent)
@@ -86,36 +89,51 @@ const handleThumbEvents = (thumbRef) => {
       }
     }
 
-    const mousedown = (e) => {
-      e.stopPropagation()
+    const mousemove = (e) => move(e.pageX)
+    const touchmove = (e) => move(e.touches[0].pageX)
 
-      // Establece las variables iniciales cuando se presiona el mouse
-      initialLeftMousePosition = e.pageX
+    const start = (pageX) => {
+      initialLeftMousePosition = pageX
       initialHueValue = hue.value
       basePosition = (hueSliderWidth * (initialHueValue * 100)) / 360 / 100
 
       document.body.addEventListener('mousemove', mousemove, { passive: true })
+      document.body.addEventListener('touchmove', touchmove, { passive: true })
     }
 
-    const mouseup = () => {
-      // Restablece las variables al soltar el mouse y remueve el evento de movimiento
+    const mousedown = (e) => {
+      e.stopPropagation()
+      start(e.pageX)
+    }
+
+    const touchstart = (e) => {
+      e.stopPropagation()
+      start(e.touches[0].pageX)
+    }
+
+    const end = () => {
       document.body.removeEventListener('mousemove', mousemove)
+      document.body.removeEventListener('touchmove', touchmove)
 
       initialLeftMousePosition = null
       initialHueValue = 0
       basePosition = null
     }
 
-    // Añade los eventos necesarios al thumbRef y maneja el desmontaje de eventos
     thumbRef.addEventListener('mousedown', mousedown)
-    document.body.addEventListener('mouseup', mouseup)
-    document.body.addEventListener('mouseleave', mouseup)
+    thumbRef.addEventListener('touchstart', touchstart)
+    document.body.addEventListener('mouseup', end)
+    document.body.addEventListener('touchend', end)
+    document.body.addEventListener('mouseleave', end)
 
     onUnmounted(() => {
       thumbRef.removeEventListener('mousedown', mousedown)
-      document.body.removeEventListener('mouseup', mouseup)
+      thumbRef.removeEventListener('touchstart', touchstart)
+      document.body.removeEventListener('mouseup', end)
+      document.body.removeEventListener('touchend', end)
       document.body.removeEventListener('mousemove', mousemove)
-      document.body.removeEventListener('mouseleave', mouseup)
+      document.body.removeEventListener('touchmove', touchmove)
+      document.body.removeEventListener('mouseleave', end)
     })
   } catch (error) {
     console.error(error.message)
@@ -143,7 +161,9 @@ const handlePositionAndStartDragging = (e) => {
 
   const selectorLeftPosition = hueSlider.value.getBoundingClientRect().left
 
-  let deltaX = e.clientX - selectorLeftPosition
+  e.touches = e.touches || [{}]
+
+  let deltaX = (e.clientX || e.touches[0].clientX) - selectorLeftPosition
   deltaX += interpolateValue((deltaX * 100) / hueSlider.value.offsetWidth, -6, 6)
 
   const leftPercent = (deltaX * 100) / hueSlider.value.offsetWidth
@@ -156,13 +176,13 @@ const handlePositionAndStartDragging = (e) => {
 
   syntheticMouseDownState.value = {
     active: true,
-    clientX: e.pageX,
-    clientY: e.clientY
+    clientX: e.pageX || e.touches[0].pageX,
+    clientY: e.clientY || e.touches[0].clientY
   }
 }
 
 onUpdated(() => {
-  // Activa Programáticamente
+  // Activate Programmatically
   if (syntheticMouseDownState.value.active) {
     const eventMousedown = new MouseEvent('mousedown', {
       bubbles: true,

@@ -18,7 +18,7 @@ import { inject } from 'vue'
 import HexTextInput from './HEXTextInput.vue'
 import NumberInput from '../../appInputs/NumberInput.vue'
 
-const emit = defineEmits(['setTransparency', 'setHue', 'setSaturation', 'setLightness'])
+const emit = defineEmits(['setTransparency', 'setHue'])
 
 const showTransparency = inject('showTransparency')
 
