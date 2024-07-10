@@ -23,103 +23,6 @@
       <TransparencySlider @setTransparency="setTransparency" />
     </template>
   </AppLayout>
-  <div :style="{ height: '200px' }" />
-  <div>
-    <h3>Props</h3>
-  </div>
-  <label>
-    Show Transparency
-    <input v-model="store.showTransparency.value" type="checkbox" />
-  </label>
-  <div :style="{ display: 'flex', flexDirection: 'column' }">
-    <div>
-      <h2>
-        HSL:
-        {{ store.hsl }}
-      </h2>
-      <div>
-        H:
-        {{ store.hsl.h }}
-      </div>
-      <div>
-        <input v-model.number="store.hsl.h" type="range" min="0" max="360" />
-      </div>
-      <div>
-        S:
-        {{ store.hsl.s }}
-      </div>
-      <div>
-        <input v-model.number="store.hsl.s" type="range" min="0" max="100" />
-      </div>
-      <div>
-        L:
-        {{ store.hsl.l }}
-      </div>
-      <div>
-        <input v-model.number="store.hsl.l" type="range" min="0" max="100" />
-      </div>
-    </div>
-    <div>
-      <h2>
-        HEX:
-        {{ store.hex }}
-      </h2>
-    </div>
-    <div>
-      <h2>
-        RGB:
-        {{ store.rgb }}
-      </h2>
-      <div>
-        R:
-        {{ store.rgb.r }}
-      </div>
-      <div>
-        <input v-model.number="store.rgb.r" type="range" min="0" max="255" />
-      </div>
-      <div>
-        G:
-        {{ store.rgb.g }}
-      </div>
-      <div>
-        <input v-model.number="store.rgb.g" type="range" min="0" max="255" />
-      </div>
-      <div>
-        B:
-        {{ store.rgb.b }}
-      </div>
-      <div>
-        <input v-model.number="store.rgb.b" type="range" min="0" max="255" />
-      </div>
-    </div>
-    <div>
-      <h2>
-        HSB:
-        {{ store.hsb }}
-      </h2>
-      <div>
-        H:
-        {{ store.hsb.h }}
-      </div>
-      <div>
-        <input v-model.number="store.hsb.h" type="range" min="0" max="360" />
-      </div>
-      <div>
-        S:
-        {{ store.hsb.s }}
-      </div>
-      <div>
-        <input v-model.number="store.hsb.s" type="range" min="0" max="100" />
-      </div>
-      <div>
-        B:
-        {{ store.hsb.b }}
-      </div>
-      <div>
-        <input v-model.number="store.hsb.b" type="range" min="0" max="100" />
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup>
@@ -206,7 +109,7 @@ watch(
   }
 )
 
-// Watch for porst.value
+// Watch for props.value
 watch(
   () => props.value,
   (value) => {
@@ -225,8 +128,8 @@ watch(
     }
   },
   {
-    immediate: true,
-    once: true
+    immediate: true
+    // once: true
   }
 )
 
@@ -239,7 +142,9 @@ watch(
         store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
       })`
 
-      // finalColor.value = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b}${showTransparency.value ? `, ${transparency.value / 100}` : ''})`
+      store.finalColor.value = `rgb(${store.rgb.r}, ${store.rgb.g}, ${store.rgb.b}${
+        store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
+      })`
     }
   },
   { immediate: true }
@@ -258,6 +163,8 @@ watch(
       }
 
       document.body.style.background = hexColor
+
+      store.finalColor.value = hexColor
     }
   },
   { immediate: true }
@@ -269,6 +176,10 @@ watch(
   () => {
     if (store.currentMode.value.id === 'hsl') {
       document.body.style.background = `hsl(${store.hsl.h}, ${store.hsl.s}%, ${store.hsl.l}%${
+        store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
+      })`
+
+      store.finalColor.value = `hsl(${store.hsl.h}, ${store.hsl.s}%, ${store.hsl.l}%${
         store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
       })`
     }

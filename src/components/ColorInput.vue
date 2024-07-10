@@ -21,7 +21,7 @@
 <script setup>
 import { computed, inject } from 'vue'
 import HSLInputs from './modeInputs/HSLInputs.vue'
-import HEXInputs from './modeInputs/HEX/HEXInputs.vue'
+import HEXInputs from './modeInputs/HEX/HexInputs.vue'
 import RGBInputs from './modeInputs/RGBInputs.vue'
 import colorModes from '@/config/colorModes'
 

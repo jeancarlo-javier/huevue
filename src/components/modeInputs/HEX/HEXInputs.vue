@@ -15,7 +15,7 @@
 
 <script setup>
 import { inject } from 'vue'
-import HexTextInput from './HEXTextInput.vue'
+import HexTextInput from './HexTextInput.vue'
 import NumberInput from '../../appInputs/NumberInput.vue'
 
 const emit = defineEmits(['setTransparency', 'setHue'])

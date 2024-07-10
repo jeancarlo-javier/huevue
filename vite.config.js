@@ -12,5 +12,20 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom'
+  },
+  build: {
+    lib: {
+      entry: fileURLToPath(new URL('./src/HueVue.vue', import.meta.url)),
+      name: 'HueVue',
+      fileName: (format) => `hue-vue.${format}.js`
+    },
+    rollupOptions: {
+      external: ['vue'],
+      output: {
+        globals: {
+          vue: 'Vue'
+        }
+      }
+    }
   }
 })

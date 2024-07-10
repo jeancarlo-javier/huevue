@@ -1,7 +1,12 @@
 {
   "name": "huevue",
-  "private": true,
-  "version": "0.0.0",
+  "main": "dist/hue-vue.umd.js",
+  "module": "dist/hue-vue.es.js",
+  "style": "dist/styles.css",
+  "files": [
+    "dist"
+  ],
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",

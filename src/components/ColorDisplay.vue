@@ -7,7 +7,7 @@ import { inject } from 'vue'
 
 const emit = defineEmits(['handleOpen'])
 
-const backgroundColor = inject('HSLColor')
+const backgroundColor = inject('finalColor')
 </script>
 
 <style scoped>
