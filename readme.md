@@ -32,7 +32,6 @@ First, import HueVue and its CSS file in your project:
 
 ```javascript
 import HueVue from 'huevue'
-import 'huevue/dist/huevue.css'
 ```
 
 Then, you can use the HueVue component in your Vue template as follows:
@@ -60,8 +59,4 @@ Then, you can use the HueVue component in your Vue template as follows:
     }
   }
 </script>
-
-<style>
-  @import 'huevue/dist/huevue.css';
-</style>
 ```
