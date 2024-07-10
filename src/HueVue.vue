@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { watch } from 'vue'
+import { watch, defineEmits } from 'vue'
 import AppLayout from './components/AppLayout.vue'
 import ColorDisplay from './components/ColorDisplay.vue'
 import PalleteSelector from './components/PalleteSelector.vue'
@@ -57,6 +57,8 @@ const props = defineProps({
     }
   }
 })
+
+const emit = defineEmits(['input'])
 
 const store = useColorStore(props.mode)
 
@@ -133,6 +135,10 @@ watch(
   }
 )
 
+const emitInputValue = (value) => {
+  emit('input', value)
+}
+
 // RGB Watcher
 watch(
   [store.currentMode, store.rgb, store.transparency, store.showTransparency],
@@ -141,6 +147,8 @@ watch(
       store.finalColor.value = `rgb(${store.rgb.r}, ${store.rgb.g}, ${store.rgb.b}${
         store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
       })`
+
+      emitInputValue(store.finalColor.value)
     }
   },
   { immediate: true }
@@ -159,6 +167,8 @@ watch(
       }
 
       store.finalColor.value = hexColor
+
+      emitInputValue(store.finalColor.value)
     }
   },
   { immediate: true }
@@ -173,6 +183,8 @@ watch(
         store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
       })`
     }
+
+    emitInputValue(store.finalColor.value)
   },
   { immediate: true }
 )
