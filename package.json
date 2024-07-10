@@ -2,7 +2,6 @@
   "name": "huevue",
   "main": "dist/hue-vue.umd.js",
   "module": "dist/hue-vue.es.js",
-  "style": "dist/styles.css",
   "files": [
     "dist"
   ],
