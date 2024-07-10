@@ -211,5 +211,6 @@ onUpdated(() => {
   border-radius: 9px;
   background: linear-gradient(90deg, red 0%, yellow 17%, lime 33%, aqua 50%, blue 67%, magenta 83%, red);
   grid-column: 1;
+  box-shadow: 0px 1px 3px 1px rgb(0 0 0 / 12%);
 }
 </style>

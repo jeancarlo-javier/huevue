@@ -233,6 +233,7 @@ onUpdated(() => {
   border-radius: var(--border-radius);
   width: 160px;
   height: 160px;
+  box-shadow: 0px 1px 3px 1px rgb(0 0 0 / 12%);
 }
 .white-gradient {
   background: linear-gradient(to right, white, transparent);

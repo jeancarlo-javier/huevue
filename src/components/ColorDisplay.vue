@@ -18,6 +18,7 @@ const backgroundColor = inject('finalColor')
   border: 2px solid white;
   border-radius: 9px;
   cursor: pointer;
+  box-shadow: 0px 1px 3px 1px rgb(0 0 0 / 12%);
 }
 .colorDisplay::after {
   content: '';

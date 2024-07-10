@@ -213,6 +213,7 @@ onUpdated(() => {
   height: 100%;
   border: 2px white solid;
   border-radius: 9px;
+  box-shadow: 0px 1px 3px 1px rgb(0 0 0 / 12%);
 }
 
 .transparency-slider::after {

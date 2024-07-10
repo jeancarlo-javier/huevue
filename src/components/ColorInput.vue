@@ -76,7 +76,7 @@ const modeText = computed(() => {
   background-color: white;
   border-radius: var(--border-radius);
   z-index: 1;
-  box-shadow: 0px 1px 3px 1px rgb(0 0 0 / 10%);
+  box-shadow: 0px 1px 3px 1px rgb(0 0 0 / 12%);
 }
 .mode-text {
   margin: auto 0;
