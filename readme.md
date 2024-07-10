@@ -26,7 +26,40 @@ yarn add huevue
 
 ## Usage
 
+First, import HueVue and its CSS file in your project:
+
 ```javascript
 import HueVue from 'huevue'
 import 'huevue/dist/huevue.css'
+```
+
+Then, you can use the HueVue component in your Vue template as follows:
+
+```html
+<template>
+  <div id="app">
+    <HueVue :mode="mode" :value="color" @input="(value) => color = value" />
+  </div>
+</template>
+
+<script>
+  import HueVue from 'huevue'
+
+  export default {
+    name: 'App',
+    components: {
+      HueVue
+    },
+    data() {
+      return {
+        mode: 'hex', // or 'rgb', 'hsl'
+        color: '#ff0000'
+      }
+    }
+  }
+</script>
+
+<style>
+  @import 'huevue/dist/huevue.css';
+</style>
 ```
