@@ -39,7 +39,11 @@ Then, you can use the HueVue component in your Vue template as follows:
 ```html
 <template>
   <div id="app">
-    <HueVue :mode="mode" :value="color" @input="(value) => color = value" />
+    <HueVue
+      :mode="mode"
+      :value="color"
+      @input="(value) => color = value"
+    />
   </div>
 </template>
 
@@ -60,3 +64,8 @@ Then, you can use the HueVue component in your Vue template as follows:
   }
 </script>
 ```
+
+## Links
+
+- [npm page](https://www.npmjs.com/package/huevue)
+- [GitHub repository](https://github.com/jeancarlo-javier/huevue)
