@@ -138,10 +138,6 @@ watch(
   [store.currentMode, store.rgb, store.transparency, store.showTransparency],
   () => {
     if (store.currentMode.value.id === 'rgb') {
-      document.body.style.background = `rgb(${store.rgb.r}, ${store.rgb.g}, ${store.rgb.b}${
-        store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
-      })`
-
       store.finalColor.value = `rgb(${store.rgb.r}, ${store.rgb.g}, ${store.rgb.b}${
         store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
       })`
@@ -162,8 +158,6 @@ watch(
         hexColor = `${hexColor}${hexTransparency}`
       }
 
-      document.body.style.background = hexColor
-
       store.finalColor.value = hexColor
     }
   },
@@ -175,10 +169,6 @@ watch(
   [store.currentMode, store.hsl, store.transparency, store.showTransparency],
   () => {
     if (store.currentMode.value.id === 'hsl') {
-      document.body.style.background = `hsl(${store.hsl.h}, ${store.hsl.s}%, ${store.hsl.l}%${
-        store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
-      })`
-
       store.finalColor.value = `hsl(${store.hsl.h}, ${store.hsl.s}%, ${store.hsl.l}%${
         store.showTransparency.value ? `, ${store.transparency.value / 100}` : ''
       })`
