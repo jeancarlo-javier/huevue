@@ -3,9 +3,11 @@
 import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
 import vuePlugin from '@vitejs/plugin-vue'
+// import postcss from 'rollup-plugin-postcss'
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
 export default defineConfig({
-  plugins: [vuePlugin()],
+  plugins: [vuePlugin(), cssInjectedByJsPlugin()],
   resolve: {
     alias: [{ find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) }]
   },

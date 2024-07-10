@@ -25,6 +25,9 @@ const showTransparency = inject('showTransparency')
   user-select: none;
   --border-radius: 9px;
 }
+.hue-vue-container * {
+  box-sizing: border-box;
+}
 .color-picker-container {
   position: absolute;
   top: 2px;
