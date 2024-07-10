@@ -1,5 +1,7 @@
 # HueVue
 
+<img width="546" alt="HueVue Preview Img" src="https://github.com/jeancarlo-javier/huevue/assets/55925131/dce6519c-7606-4e87-b809-d62d9700d0ab">
+
 HueVue is a color picker library developed with Vue.js. It provides an intuitive and customizable interface for users to select colors in web applications.
 
 ## Features
