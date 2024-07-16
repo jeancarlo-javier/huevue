@@ -2,7 +2,7 @@ import { reactive, ref, provide } from 'vue'
 import colorModes from '../config/colorModes'
 
 const useColorStore = (mode) => {
-  const isOpen = ref(true)
+  const isOpen = ref(false)
   const updatingFromHueVue = ref(false)
 
   const hue = ref(0)
