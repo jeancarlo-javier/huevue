@@ -9,6 +9,7 @@ describe('HueVue', () => {
         provide: baseProvider({})
       }
     })
+
     const container = wrapper.find('[data-test-id="app-layout"]')
 
     expect(container.exists()).toBe(true)

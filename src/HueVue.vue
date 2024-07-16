@@ -51,7 +51,7 @@ const props = defineProps({
   },
   mode: {
     type: String,
-    default: colorModes[0].id,
+    default: colorModes[1].id,
     validator: (value) => {
       return colorModes.find((m) => m.id === value)
     }
