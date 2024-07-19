@@ -1,5 +1,5 @@
 import './style.css'
 import { createApp } from 'vue'
-import HueVue from './src/HueVue.vue'
+import HueVueContainer from './src/HueVueContainer.vue'
 
-createApp(HueVue).mount('#app')
+createApp(HueVueContainer).mount('#app')

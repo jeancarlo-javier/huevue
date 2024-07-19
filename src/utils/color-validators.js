@@ -14,13 +14,14 @@ export function isHexValid(hexColor) {
   // Remove the # symbol
   hexColor = hexColor.slice(1)
 
-  // Verify that the string has a length of 6 characters
-  if (hexColor.length !== 6) {
+  // Verify that the string has a length of 3, 4, 6, or 8 characters
+  if (![3, 4, 6, 8].includes(hexColor.length)) {
     return false
   }
 
   // Verify that all characters are valid in Hexadecimal
-  const hexPattern = /^[0-9A-Fa-f]{6}$/
+  const hexPattern = /^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{6}$|^[0-9A-Fa-f]{8}$/
+
   return hexPattern.test(hexColor)
 }
 

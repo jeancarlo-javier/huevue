@@ -36,7 +36,7 @@ import ColorInput from './components/ColorInput.vue'
 import colorModes from './config/colorModes'
 import getColorType from './utils/color-types.js'
 import { hsbToRgb, hsbToHex, hsbToHsl } from './utils/color-conversions.js'
-import { transparencyToHex } from './utils/add-transparency.js'
+import { transparencyToHex } from './utils/transparency.js'
 import useColorStore from './store/colorStore'
 import useColorManipulation from './composables/useColorManipulation.js'
 
@@ -51,7 +51,7 @@ const props = defineProps({
   },
   mode: {
     type: String,
-    default: colorModes[1].id,
+    default: colorModes[0].id,
     validator: (value) => {
       return colorModes.find((m) => m.id === value)
     }

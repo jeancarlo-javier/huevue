@@ -2,6 +2,7 @@ import { rgbToHsb, hexToHsb, hslToHsb } from '../utils/color-conversions.js'
 import { isRgbaValid, isHexValid, isHslValid } from '../utils/color-validators.js'
 import { rgbaStringToObject, hslStringToObject } from '../utils/string-color-to-object.js'
 import colorModes from '../config/colorModes'
+import { getHexTransparency, removeHexTransparency } from '../utils/transparency.js'
 
 const useColorManipulation = (store) => {
   const setHue = (value) => {
@@ -66,8 +67,12 @@ const useColorManipulation = (store) => {
   const setDefaultHexValue = (value) => {
     if (!isHexValid(value)) return
 
-    store.hex.value = value.toUpperCase()
+    const hexColor = removeHexTransparency(value)
+
+    store.hex.value = hexColor.toUpperCase()
     store.updatingFromHueVue.value = true
+
+    store.transparency.value = getHexTransparency(value)
 
     setHsb(hexToHsb(store.hex.value))
   }

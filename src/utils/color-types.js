@@ -1,8 +1,6 @@
-import { rgbRegex, hslRegex, hslPatternSpaceSeparated, hslaPattern } from './regexColors.js'
+import { rgbRegex, hslRegex, hslPatternSpaceSeparated, hslaPattern, hexRegex } from './regexColors.js'
 
 function getColorType(color) {
-  const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
-
   if (hexRegex.test(color)) {
     return 'hex'
   } else if (rgbRegex.test(color)) {

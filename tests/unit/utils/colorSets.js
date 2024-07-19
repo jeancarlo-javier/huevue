@@ -114,7 +114,21 @@ export const validHexColors = [
   '#FFC133', // Gold
   '#C133FF', // Plum
   '#FF33E0', // Fuchsia
-  '#33FFE0' // Aquamarine
+  '#33FFE0', // Aquamarine
+  '#BF4D4D91',
+  '#00CCFF00',
+  '#48FF0080',
+  '#4C9E364d',
+  '#00FF0091',
+  '#FF00CC00',
+  '#FF480080',
+  '#FF4C364d',
+  '#00FF0091',
+  '#CC00FF00',
+  '#804800FF',
+  '#4D4C364d',
+  '#33FF',
+  '#FF33'
 ]
 
 export const invalidHexColors = [
@@ -122,7 +136,6 @@ export const invalidHexColors = [
   '#33FF5Z', // Invalid Hex character
   '#3357FG', // Invalid Hex character
   'FF33A1', // Missing #
-  '#33FF', // Incomplete Hex code
   '#FF57339', // Too many characters
   '#F5FF33G', // Invalid Hex character
   '5733FF', // Missing #
@@ -132,7 +145,6 @@ export const invalidHexColors = [
   '#3380FFG', // Too many characters
   '#FFA7G3', // Invalid Hex character
   'A733FF', // Missing #
-  '#FF33', // Incomplete Hex code
   '#33FFC1G', // Too many characters
   '#FF33E', // Incomplete Hex code
   '33FFE0', // Missing #
@@ -194,4 +206,31 @@ export const hslStringMap = {
   'hsla(120, 100%, 50%)': null,
   'hsl(0deg 100% 50%)': { h: 0, s: 100, l: 50 },
   'hsl(120deg 100% 50% / 42%)': { h: 120, s: 100, l: 50 }
+}
+
+export const hexTransparencyMap = {
+  '#FF573300': 0,
+  '#FF5733FF': 100,
+  '#FF002B0d': 5,
+  '#FF002Ba1': 63,
+  '#FF002B70': 44,
+  '#00FF08': 100,
+  '#16597A42': 26,
+  '#377A1691': 57,
+  '#359E0030': 19,
+  '#00FF0800': 0
+}
+
+export const hexWithaAndWithoutTransparencyMap = {
+  '#359E0030': '#359E00',
+  '#94009E45': '#94009E',
+  '#9E4F00cc': '#9E4F00',
+  '#FF8000': '#FF8000',
+  '#00FF1E': '#00FF1E',
+  '#3700FFba': '#3700FF',
+  '#73FF0026': '#73FF00',
+  '#FF2F0017': '#FF2F00',
+  '#FB00FFfc': '#FB00FF',
+  '#000000a1': '#000000',
+  '#000000d4': '#000000'
 }
